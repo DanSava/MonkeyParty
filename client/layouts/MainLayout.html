@@ -1,0 +1,66 @@
+<template name="MainLayout">
+    <header>
+        <h1>Some shit</h1>
+    </header>
+    <main>
+        {{> Template.dynamic template=main}}
+    </main>
+</template>
+
+<template name="Test">
+    <button class="openModal">Click Me</button>
+     <p>Form value: {{formValue}}</p>
+
+     <div id="modalView" class="ui modal">
+       <div class="content">
+         <div class="ui fluid input">
+           <input id="modalInputValue" placeholder="form value here" type="text" value="{{formValue}}">
+         </div>
+       </div>
+       <div class="actions">
+         <div class="ui button cancel">Cancel</div>
+         <div class="ui button ok">OK</div>
+       </div>
+     </div>
+
+     <div class="ui button test">Activator</div>
+       <div class="ui fluid popup bottom left transition hidden" style="top: 552.131px; left: 0.909091px; bottom: auto; right: auto; width: 783px;">
+           <div class="ui four column relaxed divided grid">
+             <div class="column">
+               <h4 class="ui header">Fabrics</h4>
+               <div class="ui link list">
+                 <a class="item">Cashmere</a>
+                 <a class="item">Linen</a>
+                 <a class="item">Cotton</a>
+                 <a class="item">Viscose</a>
+               </div>
+             </div>
+             <div class="column">
+               <h4 class="ui header">Size</h4>
+               <div class="ui link list">
+                 <a class="item">Small</a>
+                 <a class="item">Medium</a>
+                 <a class="item">Large</a>
+                 <a class="item">Plus Sizes</a>
+               </div>
+             </div>
+             <div class="column">
+               <h4 class="ui header">Colors</h4>
+               <div class="ui link list">
+                 <a class="item">Neutrals</a>
+                 <a class="item">Brights</a>
+                 <a class="item">Pastels</a>
+               </div>
+             </div>
+             <div class="column">
+               <h4 class="ui header">Types</h4>
+               <div class="ui link list">
+                 <a class="item">Knitwear</a>
+                 <a class="item">Outerwear</a>
+                 <a class="item">Pants</a>
+                 <a class="item">Shoes</a>
+               </div>
+             </div>
+           </div>
+     </div>
+</template>
