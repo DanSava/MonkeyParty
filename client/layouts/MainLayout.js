@@ -1,3 +1,86 @@
+if (Meteor.isClient) {
+  window.onload = function() {
+        canvas = document.getElementById("canvas");
+        console.log(canvas);
+  		context = canvas.getContext("2d");
+  		width = canvas.width ;
+  		height = canvas.height;
+  		tables = [];
+
+  	// Number of tables
+  	function setupTables(noTables, NoTablesPerRow){
+  		tables = [];
+  		width = canvas.width;
+  		height = canvas.height;
+  		var tableRadius = height * 2 / 28,
+  			no_table_rows = Math.ceil(noTables /NoTablesPerRow),
+  			prevHight = height / (no_table_rows * 2),
+  			prevWidth = width / (NoTablesPerRow * 2);
+
+  			// Init the tables
+  			for (i = 0; i < no_table_rows; i++) {
+  				for (j = 0; j < NoTablesPerRow; j++){
+                    if (i * NoTablesPerRow + j + 1 <= noTables){
+                        tables.push(table.create(prevWidth, prevHight, tableRadius, 10));
+                    }
+  					prevWidth += width * (1/NoTablesPerRow);
+  				}
+  				prevHight += height / no_table_rows;
+  				prevWidth = width/(NoTablesPerRow * 2);
+  		    }
+  	}
+
+  	function getClickedTable(x, y) {
+  			var tableObj = null;
+  			tables.forEach(function(el, index, array) {
+            if (el.isMouseOver(event.clientX, event.clientY)){
+  						tableObj = {'table' : el, 'tableNo': index};
+  		      }
+        });
+  			return tableObj;
+  	}
+  	function getClickedSeat(x, y) {
+  		var seatInfo = null;
+  		tables.forEach(function(el, index, array) {
+  					var seat = el.getClickedSeat(event.clientX, event.clientY);
+  					if (seat !== null) {
+  						seatInfo =  {'table': el, 'tableNo': index, 'seat': seat};
+  					}
+  		});
+  		return seatInfo;
+  	}
+
+  	setupTables(16,5);
+  	update();
+
+  	canvas.addEventListener("mousedown", function(event) {
+  		console.log(getClickedSeat(event.clientX, event.clientY));
+        console.log(event.offsetX, event.offsetY);
+        console.log(event);
+
+  	});
+
+  	canvas.addEventListener("mousemove", function(event) {
+  		tables.forEach(function(el, index, array) {
+            if (el.checkMouseOver(event.offsetX, event.offsetY)){
+  			  console.log('Mouse click over table:', index);
+  		  }
+          });
+  	});
+  	window.addEventListener("resize", function (event) {
+  		setupTables(16,5);
+  	} );
+
+
+  	function update() {
+  		context.clearRect(0, 0, width, height);
+   		utils.drawTables(tables, context);
+  		requestAnimationFrame(update);
+  	}
+    };
+
+}
+
 Template.Test.helpers({
   formValue: function () {
     return Session.get("formValue");
@@ -19,7 +102,7 @@ Template.Test.events({
             }
           }).modal('show');
       },
-      'click .browse': function () {
+      'click .cashmere': function () {
           console.log("click registered!");
       }
 });
@@ -33,4 +116,5 @@ Template.Test.rendered = function(){
         hide: 800
       }
   });
+  this.$('.ui.embed').embed();
 };

@@ -11,7 +11,7 @@ Tables.allow({
     }
 });
 
-TablesSchema = SimpleSchema({
+TablesSchema = new SimpleSchema({
     name:{
         type: String,
         label: "Name",

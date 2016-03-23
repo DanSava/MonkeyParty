@@ -1,17 +1,7 @@
 Seats = new Mongo.Collection("seats");
-Seats.allow({
-    insert: function(){
-        return true;
-    },
-    update: function(){
-        return true;
-    },
-    remove: function(){
-        return true;
-    }
-});
 
-SeatsSchema = SimpleSchema({
+
+SeatsSchema = new SimpleSchema({
     name:{
         type: String,
         label: "Name",
