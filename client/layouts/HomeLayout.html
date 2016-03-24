@@ -38,9 +38,13 @@
       <div class="ui vertical stripe segment">
         <div class="ui middle aligned stackable grid container">
           <div class="row">
-            <div class="center aligned column">
-              <a class="ui massive button violet">Join the party in order to pick a seat</a>
-            </div>
+              {{#if currentUser}}
+                {{>PickYourSeat}}
+              {{else}}
+                <div class="center aligned column">
+                    <a class="ui massive button violet">Join the party in order to pick a seat</a>
+                </div>
+              {{/if}}
           </div>
         </div>
       </div>
@@ -128,7 +132,24 @@
           </h1>
           <h2>Let us know you are going to join the party by loging in and picking a seat at a table</h2>
           <div class="positive ui huge primary button">Join the Party</div>
+          <div class="positive ui huge primary button">{{>loginButtons}}</div>
+
         </div>
       </div>
+    </div>
+</template>
+
+<template name="PickYourSeat">
+    <div class="ui raised segment float left">
+      <div class="ui compact right attached rail">
+        <div class="ui compact segment ">
+          Right Rail Content
+          <div class="ui fluid vertical menu">
+            <a id="addTable" class="item"><i class="plus icon"></i> Add Table</a>
+            <a id="removeTable" class="item"><i class="minus icon"></i> Remove Table</a>
+          </div>
+        </div>
+      </div>
+      <canvas id="canvas" width="1200" height="800"></canvas>
     </div>
 </template>

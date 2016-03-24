@@ -61,12 +61,15 @@ utils = {
       utils.drawParticle(el, context);
     });
   },
-  drawSeat: function(seat, context){
+  drawSeat: function(seat, tableIdx, seatIdx, context){
 
       context.save();
       context.beginPath();
       // Draw the shadow of the target circle
-      if (seat.mouseOver){
+      var selectedSeat = Session.get('selectedSeat');
+      var isSeatSelected = selectedSeat && selectedSeat.tableNo === tableIdx && selectedSeat.seat === seatIdx;
+
+      if (seat.mouseOver && !isSeatSelected){
           context.shadowColor = '#999';
           context.shadowBlur = 1;
           context.shadowOffsetX = 5;
@@ -74,14 +77,20 @@ utils = {
       }
 
       context.arc(seat.particle.x, seat.particle.y, seat.particle.radius, 0, Math.PI * 2, false);
-      context.fillStyle = '#269900';
-      context.fill();
+      if (isSeatSelected){
+          context.fillStyle = '#0066ff';
+          context.fill();
+      }
+      else{
+          context.fillStyle = '#269900';
+          context.fill();
+      }
       context.restore();
 
   },
-  drawSeats:function(seats, context) {
+  drawSeats:function(seats, tableIdx,context) {
       seats.forEach(function(el, index, array) {
-        utils.drawSeat(el, context);
+        utils.drawSeat(el, tableIdx, index, context);
       });
   },
   drawTable: function (table, idx, context){
@@ -90,32 +99,37 @@ utils = {
       // draw the big table
       context.beginPath();
       context.arc(part.x, part.y, part.radius , 0, Math.PI * 2, false);
+      context.font = 'bold 20pt Calibri';
+      if (idx >= 10){
+          context.fillText(idx + 1 , part.x - 10,  part.y + 5);
+      }
+      else {
+          context.fillText(idx + 1 , part.x - 5,  part.y + 5);
+      }
+
       if (table.mouseOver) {
-          context.font = 'bold 20pt Calibri';
-          if (idx >= 10){
-              context.fillText(idx , part.x - 10,  part.y + 5);
-          }
-          else {
-              context.fillText(idx , part.x - 5,  part.y + 5);
-          }
           context.lineWidth = 5;
           context.stroke() ;
         }
-      else {
-          context.lineWidth = 3;
-          context.font = 'bold 20pt Calibri';
-          context.fillText(idx , part.x - 5,  part.y + 5);
-          context.stroke() ;
-      }
+        var selectedTable = Session.get("selectedTable");
+        var isTableSelected = selectedTable && selectedTable.tableNo === idx;
+        if (isTableSelected){
+            context.lineWidth = 5;
+            context.stroke() ;
+        }
+        else{
+            context.lineWidth = 3;
+            context.stroke() ;
+        }
       context.restore();
 
       //draw the table seats
-      utils.drawSeats(table.seats, context);
+      utils.drawSeats(table.seats, idx, context);
 
   },
   drawTables: function (tables, context){
       tables.forEach(function(el, index, array) {
-        utils.drawTable(el, index + 1, context);
+        utils.drawTable(el, index, context);
       });
   },
 
@@ -307,5 +321,28 @@ particle = {
        },
 
      };
+
+tableUtils = {
+     setupTables: function(noTables, NoTablesPerRow, width, height){
+        var tables = [];
+        var tableRadius = height * 2 / 28,
+            no_table_rows = Math.ceil(noTables /NoTablesPerRow),
+            prevHight = height / (no_table_rows * 2),
+            prevWidth = width / (NoTablesPerRow * 2);
+
+            // Init the tables
+            for (i = 0; i < no_table_rows; i++) {
+                for (j = 0; j < NoTablesPerRow; j++){
+                    if (i * NoTablesPerRow + j + 1 <= noTables){
+                        tables.push(table.create(prevWidth, prevHight, tableRadius, 10));
+                    }
+                    prevWidth += width * (1/NoTablesPerRow);
+                }
+                prevHight += height / no_table_rows;
+                prevWidth = width/(NoTablesPerRow * 2);
+            }
+        return tables;
+    }
+};
 
 }

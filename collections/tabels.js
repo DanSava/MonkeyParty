@@ -12,6 +12,10 @@ Tables.allow({
 });
 
 TablesSchema = new SimpleSchema({
+    index:{
+        type: Number,
+        label:"Table index"    
+    },
     name:{
         type: String,
         label: "Name",
@@ -20,19 +24,9 @@ TablesSchema = new SimpleSchema({
         type: String,
         label: "Description",
     },
-    author:{
-        type: String,
-        label: "author",
-        autoValue:function () {
-            return this.userId;
-        }
-    },
-    createdAt: {
-        type: Date,
-        label: "Created At",
-        autoValue: function () {
-            return new Date();
-        }
+    nrSeats: {
+        type: Number,
+        label: "Number of seats",
     }
 });
 
