@@ -74,7 +74,7 @@ utils = {
       }
 
       context.arc(seat.particle.x, seat.particle.y, seat.particle.radius, 0, Math.PI * 2, false);
-      context.fillStyle = '#3366ff';
+      context.fillStyle = '#269900';
       context.fill();
       context.restore();
 
@@ -91,12 +91,20 @@ utils = {
       context.beginPath();
       context.arc(part.x, part.y, part.radius , 0, Math.PI * 2, false);
       if (table.mouseOver) {
-          context.fillStyle = '#00ffff';
-          context.fill();
+          context.font = 'bold 20pt Calibri';
+          if (idx >= 10){
+              context.fillText(idx , part.x - 10,  part.y + 5);
+          }
+          else {
+              context.fillText(idx , part.x - 5,  part.y + 5);
+          }
+          context.lineWidth = 5;
+          context.stroke() ;
         }
       else {
+          context.lineWidth = 3;
           context.font = 'bold 20pt Calibri';
-          context.fillText(idx , part.x - idx,  part.y + 5);
+          context.fillText(idx , part.x - 5,  part.y + 5);
           context.stroke() ;
       }
       context.restore();

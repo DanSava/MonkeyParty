@@ -42,7 +42,7 @@ if (Meteor.isClient) {
   	function getClickedSeat(x, y) {
   		var seatInfo = null;
   		tables.forEach(function(el, index, array) {
-  					var seat = el.getClickedSeat(event.clientX, event.clientY);
+  					var seat = el.getClickedSeat(x, y);
   					if (seat !== null) {
   						seatInfo =  {'table': el, 'tableNo': index, 'seat': seat};
   					}
@@ -50,25 +50,27 @@ if (Meteor.isClient) {
   		return seatInfo;
   	}
 
-  	setupTables(16,5);
+  	setupTables(14,4);
   	update();
 
   	canvas.addEventListener("mousedown", function(event) {
-  		console.log(getClickedSeat(event.clientX, event.clientY));
+  		console.log(getClickedSeat(event.offsetX, event.offsetY));
         console.log(event.offsetX, event.offsetY);
         console.log(event);
 
   	});
 
   	canvas.addEventListener("mousemove", function(event) {
+        document.body.style.cursor = "default";
   		tables.forEach(function(el, index, array) {
             if (el.checkMouseOver(event.offsetX, event.offsetY)){
-  			  console.log('Mouse click over table:', index);
+              document.body.style.cursor = "pointer";
+              console.log('Mouse click over table:', index);
   		  }
           });
   	});
   	window.addEventListener("resize", function (event) {
-  		setupTables(16,5);
+  		setupTables(14, 4);
   	} );
 
 
