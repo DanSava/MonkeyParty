@@ -1,0 +1,44 @@
+<template name="ConfirmSelectionModal">
+    <div id="confirmSelectionDlg" class="ui modal">
+            {{> ConfirmSelectionDialog}}
+    </div>
+</template>
+
+<template name="ConfirmSelectionDialog">
+    <div class="ui vertical stacked segment">
+        <div class="ui text container">
+            <h3 class="ui header aligned center">Please confirm the seat selection!</h3>
+            <div class="ui stacked segment">
+                <div class="ui fluid form">
+                    {{#if isCurrentUserSeatingVisible}}
+                    <div class="field">
+                        <div class="ui blue huge label fluid">
+                          Hi {{currentUserName}}, you will be seated at table {{currentUserTable}} seat {{currentUserSeat}}.
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{#each seats}}
+                        <div class="field">
+                            <div class="ui label fluid">
+                                Add name for guest siting at table nr {{this.table}}, seat nr {{this.seat}}
+                            </div>
+                            <div class="ui fluid input">
+                              <input id="{{this.key}}" placeholder="First Name & Last Name" type="text" value="">
+                            </div>
+                        </div>
+                    {{/each}}
+                    <div id="submitBtn" class="ui fluid large green submit button">Confirm</div>
+                </div>
+                {{#if CSFErrorsPresent}}
+                <div class="ui error message">
+                    {{#each CSFErrors}}
+                    <ol class="ui list">
+                      <li value="*">{{this}}</li>
+                    </ol>
+                    {{/each}}
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</template>

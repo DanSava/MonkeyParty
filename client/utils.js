@@ -62,14 +62,32 @@ utils = {
     });
   },
   drawSeat: function(seat, tableIdx, seatIdx, context){
-
       context.save();
       context.beginPath();
-      // Draw the shadow of the target circle
-      var selectedSeat = Session.get('selectedSeat');
-      var isSeatSelected = selectedSeat && selectedSeat.tableNo === tableIdx && selectedSeat.seat === seatIdx;
+      var isSeatSelected = false;
+      var isThisSeatTakeByMeAndSelected = false;
 
-      if (seat.mouseOver && !isSeatSelected){
+      var isSeatTaken = (tableIdx + '_' + seatIdx in takenSeats);
+      var myTakenSeat = (tableIdx + '_' + seatIdx in myTakenSeats);
+
+      for(var j=0; j<myTakenSelectedSeats.length; j++) {
+          if (myTakenSelectedSeats[j].seat === seatIdx && myTakenSelectedSeats[j].tableNo === tableIdx) {
+                isThisSeatTakeByMeAndSelected = true;
+          }
+      }
+      for(var i=0; i<selectedSeats.length; i++) {
+          if (selectedSeats[i].seat === seatIdx && selectedSeats[i].tableNo === tableIdx) {
+                isSeatSelected = true;
+          }
+      }
+
+      if (seat.mouseOver && !isSeatSelected && !isSeatTaken){
+          context.shadowColor = '#999';
+          context.shadowBlur = 1;
+          context.shadowOffsetX = 5;
+          context.shadowOffsetY = 5;
+      }
+      else if (seat.mouseOver && myTakenSeat) {
           context.shadowColor = '#999';
           context.shadowBlur = 1;
           context.shadowOffsetX = 5;
@@ -77,8 +95,20 @@ utils = {
       }
 
       context.arc(seat.particle.x, seat.particle.y, seat.particle.radius, 0, Math.PI * 2, false);
-      if (isSeatSelected){
+      if (isSeatSelected && !isSeatTaken){
           context.fillStyle = '#0066ff';
+          context.fill();
+      }
+      else if (isSeatTaken && !myTakenSeat){
+          context.fillStyle = '#e60000';
+          context.fill();
+      }
+      else if (isThisSeatTakeByMeAndSelected) {
+          context.fillStyle = '#00ccff';
+          context.fill();
+      }
+      else if (myTakenSeat) {
+          context.fillStyle = '#e6e600';
           context.fill();
       }
       else{

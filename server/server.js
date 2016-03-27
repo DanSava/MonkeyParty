@@ -28,9 +28,30 @@ if (Meteor.isServer) {
 
   });
   Meteor.publish("settingVariables", function(){
-      return SettingVariables.find();
+      var settings =  SettingVariables.find({index:"000"});
+      if (settings){
+          return settings;
+      }
+      return this.ready();
   });
   Meteor.publish("tables", function(){
       return Tables.find();
+  });
+
+  Meteor.publish("allSeats", function(){
+      var seats = Seats.find();
+      if (seats) {
+          return seats;
+      }
+      return this.ready();
+  });
+
+  Meteor.publish("mySeats", function(argument){
+      var userId = this.userId,
+        mySeats = Seats.find({owner: userId});
+      if (mySeats) {
+          return mySeats;
+      }
+      return this.ready();
   });
 }

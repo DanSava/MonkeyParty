@@ -13,7 +13,7 @@
     <i class="wrench icon"></i>
     <button class="openModal">Click Me</button>
      <p>Form value: {{formValue}}</p>
-     {{>NotSoFast}}
+     {{>LoginDlg}}
      <div class="ui button test">Activator</div>
        <div class="ui fluid popup bottom left transition hidden" style="top: 552.131px; left: 0.909091px; bottom: auto; right: auto; width: 783px;">
            <div class="ui four column relaxed divided grid">
@@ -37,29 +37,4 @@
              </div>
            </div>
      </div>
-</template>
-
-<template name="NotSoFast">
-    <div id="modalView" class="ui modal">
-        <div class="header">
-                Not so fast!
-        </div>
-      <div class="content">
-          <div class="ui container center">
-              <h3 class="ui header"> Only friends and family can attend the wedding </h3>
-                <p>And if you are part of our friends and family please povide the
-                   given password</p>
-          </div>
-        <div class="ui fluid form">
-            <div class="ui fluid input">
-              <input id="modalInputValue" placeholder="Password" type="text" value="{{formValue}}">
-            </div>
-        </div>
-      </div>
-      <div class="actions">
-        <div class="ui button cancel">Cancel</div>
-        <div class="ui button ok">OK</div>
-      </div>
-    </div>
-
 </template>

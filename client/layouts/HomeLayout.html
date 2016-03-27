@@ -4,6 +4,8 @@
         {{>HomeBigHeaderImage}}
         {{>HomeContent}}
         {{>Footer}}
+        {{>NotSoFast}}
+        {{>LoginModal}}
     </main>
 </template>
 
@@ -29,26 +31,21 @@
               <p>It is true that we are not going to find a wizzard, climb a mountain slay a dragon and steal it's gold, but non the less it will be one of the bigest undertakings of our
               lives. So we will need all the help we can get from our friends and family.
               </p>
-                But what is this big adventure I am talking about? Well, it is just a big party, that we will organize for you guys!.
-                <p>
-              </p>
+               <p>But what is this big adventure I am talking about? Well, it is just a big party, that we will organize for you guys. See you there!</p>
            </div>
         </div>
 
-      <div class="ui vertical stripe segment">
-        <div class="ui middle aligned stackable grid container">
+        <div class="ui internally celled grid">
           <div class="row">
               {{#if currentUser}}
                 {{>PickYourSeat}}
               {{else}}
                 <div class="center aligned column">
-                    <a class="ui massive button violet">Join the party in order to pick a seat</a>
+                    <a id='joinThePartyBtn' class="ui massive button green">Join the party in order to pick a seat</a>
                 </div>
               {{/if}}
           </div>
         </div>
-      </div>
-
 
       <div class="ui vertical stripe quote segment">
         <div class="ui equal width stackable internally celled grid">
@@ -56,6 +53,14 @@
             <div class="column">
               <h3>"What a Company"</h3>
               <p>That is what they all say about us</p>
+              <div class="ui statistic">
+                <div class="value">
+                  0
+                </div>
+                <div class="label">
+                  Party Fonds
+                </div>
+              </div>
             </div>
             <div class="column">
               <h3>"I shouldn't have gone with their competitor."</h3>
@@ -120,8 +125,7 @@
             </a>
             <a class="active item">Home</a>
             <div class="right item">
-              <a class="ui inverted button">Log in!</a>
-              <a class="ui inverted button">Sign Up</a>
+              <a class="ui inverted button">{{>loginButtons}}</a>
             </div>
           </div>
         </div>
@@ -131,25 +135,108 @@
             Dan & Gabriela Wedding party !
           </h1>
           <h2>Let us know you are going to join the party by loging in and picking a seat at a table</h2>
-          <div class="positive ui huge primary button">Join the Party</div>
-          <div class="positive ui huge primary button">{{>loginButtons}}</div>
-
+          <div id='joinThePartyBtn' class="positive ui huge primary button">{{joinThePartyBtnLbl}}</div>
         </div>
       </div>
     </div>
 </template>
 
 <template name="PickYourSeat">
-    <div class="ui raised segment float left">
-      <div class="ui compact right attached rail">
-        <div class="ui compact segment ">
-          Right Rail Content
-          <div class="ui fluid vertical menu">
-            <a id="addTable" class="item"><i class="plus icon"></i> Add Table</a>
-            <a id="removeTable" class="item"><i class="minus icon"></i> Remove Table</a>
-          </div>
+    {{#if Template.subscriptionsReady}}
+            <div class="two wide column">
+                {{#if isTableSelected}}
+                    {{>ListWithPeopleAtTable}}
+                {{/if}}
+            </div>
+            <div class="twelve wide column">
+                <canvas id="canvas" width="1200" height="600"></canvas>
+            </div>
+            <div class="two wide column">
+                {{#if isInRole 'super'}}
+                    {{> AdminMenu}}
+                {{else}}
+                    {{> UserMenu}}
+                {{/if}}
+            </div>
+            {{#each initSettings}}
+            {{/each}}
+        {{> ConfirmSelectionModal}}
+    {{else}}
+        Loading...
+    {{/if}}
+</template>
+
+<template name="ListWithPeopleAtTable">
+    <div class="ui label large teal fluid">
+        Table Name Here
+    </div>
+    <table class="ui very basic collapsing celled table">
+      <thead>
+        <tr><th>Guest Name</th>
+        <th>Confirmed</th>
+      </tr></thead>
+    <tbody>
+        {{#each guestsSeatingAtTable}}
+            <tr>
+              <td>
+                <h4 class="ui image header">
+                  <div class="content">
+                    {{name}}
+                   </div>
+              </h4></td>
+              <td>
+                how long ago
+              </td>
+            </tr>
+        {{/each}}
+      </tbody>
+    </table>
+</template>
+
+<template name="AdminMenu">
+  <div class="ui compact segment ">
+      Menu Title
+    <div class="ui fluid vertical menu">
+      <a id="addTable" class="item"><i class="plus icon"></i> Add Table</a>
+      <a id="removeTable" class="item"><i class="minus icon"></i> Remove Table</a>
+      <a id="removeSeat" class="item"><i class="cloud icon"></i> Remove person</a>
+    </div>
+  </div>
+</template>
+
+<template name="UserMenu">
+  <div class="ui compact segment ">
+      Menu Title
+    <div class="ui fluid vertical menu">
+      <a id="confirmSelectionBtn" class="item"><i class="plus icon"></i>Confirm Selection</a>
+      <a id="clearSelectionBtn" class="item"><i class="exit icon"></i>Clear Selection</a>
+    </div>
+  </div>
+</template>
+
+
+
+<template name="NotSoFast">
+    <div id="notSoFastDlg" class="ui modal">
+      <div class="ui vertical stripe stacked segment">
+        <div class="ui text container">
+             <h3 class="ui header aligned center">Sorry</h3>
+        <p>Only friends and family can attend the wedding </p>
+        <p>If you are part of our friends and family please povide the password on the invitation</p>
+
+        <div class="ui input fluid">
+          <input id="invitationPass" class="invitationPass" placeholder="Password from the invitation letter" type="text" value="">
         </div>
+
+        </div>
+    </div>
+      <div class="actions">
+        <div class="ui button ok">OK</div>
       </div>
-      <canvas id="canvas" width="1200" height="800"></canvas>
+    </div>
+</template>
+<template name="LoginModal">
+    <div id="loginModal" class="ui modal">
+        {{>LoginDlg}}
     </div>
 </template>

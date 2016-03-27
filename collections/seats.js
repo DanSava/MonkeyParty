@@ -1,33 +1,45 @@
 Seats = new Mongo.Collection("seats");
 
+Seats.allow({
+    insert: function(){
+        return true;
+    },
+    update: function(){
+        return true;
+    },
+    remove: function(){
+        return true;
+    }
+});
 
 SeatsSchema = new SimpleSchema({
-    name:{
+    name: {
         type: String,
         label: "Name",
     },
-    desc: {
+    owner: {
         type: String,
-        label: "Description",
-    },
-    author:{
-        type: String,
-        label: "author",
+        label: "Owner",
         autoValue:function () {
             return this.userId;
         }
     },
-    createdAt: {
-        type: Date,
-        label: "Created At",
-        autoValue: function () {
-            return new Date();
-        }
+    seat: {
+        type: Number,
+        label: "Seat Number"
     },
     table: {
-        type:String,
-        label: "table",
-    }
+        type: Number,
+        label: "Table Number"
+    },
+    plusOne: {
+        type: Boolean,
+        label: "Is a plus one"
+    },
+    seatKey: {
+        type: String,
+        label: "The seat key tableNo_seatNo"
+    },
 });
 
 Seats.attachSchema( SeatsSchema);
