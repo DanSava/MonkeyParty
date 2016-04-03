@@ -155,3 +155,6 @@ Template.ConfirmSelectionDialog.events({
         }
     }
 });
+Template.ConfirmSelectionDialog.onRendered = function(){
+console.log(' renderde' );    
+};

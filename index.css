@@ -2,7 +2,10 @@
 .hidden.menu {
      display: none;
    }
-
+   .landing-image {
+       background-image: url('/images/banner.jpg');
+       background-size: cover;
+   }
    .masthead.segment {
      min-height: 700px;
      padding: 1em 0em;
@@ -18,10 +21,13 @@
      margin-bottom: 0em;
      font-size: 4em;
      font-weight: normal;
+     font-family: 'Lobster', cursive;
    }
    .masthead h2 {
-     font-size: 1.7em;
+     font-size: 2em;
      font-weight: normal;
+     font-family: 'Lobster', cursive;
+     color: #00cc44;
    }
 
    .ui.vertical.stripe {

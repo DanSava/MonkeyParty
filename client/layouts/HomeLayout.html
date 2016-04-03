@@ -1,10 +1,13 @@
 <template name="HomeLayout">
+    <head>
+        <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
+    </head>
     <main>
         {{>HomeHeader}}
         {{>HomeBigHeaderImage}}
         {{>HomeContent}}
         {{>Footer}}
-        {{>NotSoFast}}
+        {{>NotSoFastModal}}
         {{>LoginModal}}
     </main>
 </template>
@@ -35,7 +38,7 @@
            </div>
         </div>
 
-        <div class="ui internally celled grid">
+        <div class="ui externally celled grid">
           <div class="row">
               {{#if currentUser}}
                 {{>PickYourSeat}}
@@ -46,44 +49,106 @@
               {{/if}}
           </div>
         </div>
+        {{> GuestList}}
 
       <div class="ui vertical stripe quote segment">
-        <div class="ui equal width stackable internally celled grid">
+        <div class="ui equal width stackable externally celled grid">
           <div class="center aligned row">
             <div class="column">
-              <h3>"What a Company"</h3>
-              <p>That is what they all say about us</p>
+              <h3>"Party Funds"</h3>
+              <p>Help us make the party not only unforgetable for us</p>
               <div class="ui statistic">
                 <div class="value">
                   0
                 </div>
                 <div class="label">
-                  Party Fonds
+                  Party Funds
                 </div>
               </div>
             </div>
             <div class="column">
-              <h3>"I shouldn't have gone with their competitor."</h3>
+              <h3>"Payment Details should go here "</h3>
+              <button class="ui primary button">
+                  Paypal button
+              </button>
               <p>
-                <img src="assets/images/white-image.png" class="ui avatar image"> <b>Nan</b> Chief Fun Officer Acme Toys
+                   Bank payment info
               </p>
             </div>
           </div>
         </div>
       </div>
 
+      <div class="ui vertical stripe segment center aligned ">
+         <div class="ui text container center aligned">
+             <h3 class="ui header">Numbeer of guests attending the event</h3>
+             <div class="ui statistic aligned center">
+               <div class="value">
+                 {{nrGuests}}
+               </div>
+               <div class="label">
+                 Guests
+               </div>
+             </div>
+         </div>
+      </div>
+
+      <div class="ui vertical stripe segment center aligned ">
+         <div class="ui text container center aligned">
+             <h3 class="ui header">Party Location</h3>
+             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5682.205992839244!2d26.044856900419635!3d44.59491878558589!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40b21bb391332dd7%3A0x515102a88012a092!2sClub+Cortina!5e0!3m2!1sen!2sro!4v1459183400032" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+         </div>
+         <a href="http://www.clubcortina.ro/" class="ui large button">More Details</a>
+      </div>
+
+
       <div class="ui vertical stripe segment">
         <div class="ui text container">
           <h3 class="ui header">Breaking The Grid, Grabs Your Attention</h3>
-          <a class="ui large button">Read More</a>
           <h4 class="ui horizontal header divider">
             <a href="#">Case Studies</a>
           </h4>
           <h3 class="ui header">Did We Tell You About Our Bananas?</h3>
-          <a class="ui large button">I'm Still Quite Interested</a>
         </div>
       </div>
   </div>
+</template>
+
+<template name="GuestList">
+    {{#if listAllGuests}}
+        <div class="ui stackable six column centered grid">
+            {{#each guestsByTable}}
+                <div class="column">
+                    <div class="ui segment">
+                        <div class="ui label large teal fluid">
+                            Table Name Here
+                        </div>
+                        <table class="ui very basic collapsing celled table">
+                          <thead>
+                            <tr><th>Guest Name</th>
+                            <th>Confirmed</th>
+                          </tr></thead>
+                        <tbody>
+                            {{#each this}}
+                                <tr>
+                                  <td>
+                                    <h4 class="ui image header">
+                                      <div class="content">
+                                        {{name}}
+                                       </div>
+                                  </h4></td>
+                                  <td>
+                                    how long ago
+                                  </td>
+                                </tr>
+                            {{/each}}
+                          </tbody>
+                        </table>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    {{/if}}
 </template>
 
 <template name="Footer">
@@ -94,14 +159,12 @@
           <div class="three wide column">
             <h4 class="ui inverted header">About</h4>
             <div class="ui inverted link list">
-              <a href="/" class="item">Religious Ceremonies</a>
-              <a href="#" class="item">Gazebo Plans</a>
+              <a href="/" class="item">Location</a>
             </div>
           </div>
           <div class="three wide column">
             <h4 class="ui inverted header">Services</h4>
             <div class="ui inverted link list">
-              <a href="/" class="item">How To Access</a>
               <a href="/" class="item">Favorite X-Men</a>
             </div>
           </div>
@@ -117,15 +180,15 @@
 
 <template name="HomeBigHeaderImage">
     <div class="pusher">
-      <div class="ui inverted vertical masthead center aligned segment">
+      <div class="ui vertical masthead center aligned segment" style="background-image:url('/images/banner.jpg');background-size: cover !important;">
         <div class="ui container">
-          <div class="ui large secondary inverted pointing menu">
+          <div class="ui large secondary pointing menu">
             <a class="toc item">
               <i class="sidebar icon"></i>
             </a>
-            <a class="active item">Home</a>
+            <a href='/' class="active item">Home</a>
             <div class="right item">
-              <a class="ui inverted button">{{>loginButtons}}</a>
+              <a class="ui button">{{>loginButtons}}</a>
             </div>
           </div>
         </div>
@@ -148,8 +211,8 @@
                     {{>ListWithPeopleAtTable}}
                 {{/if}}
             </div>
-            <div class="twelve wide column">
-                <canvas id="canvas" width="1200" height="600"></canvas>
+            <div class="twelve wide column test111">
+                <canvas id="canvas" class="fluid"></canvas>
             </div>
             <div class="two wide column">
                 {{#if isInRole 'super'}}
@@ -206,34 +269,32 @@
 
 <template name="UserMenu">
   <div class="ui compact segment ">
-      Menu Title
-    <div class="ui fluid vertical menu">
+      Hello There!
+    <div class="ui fluid compact vertical menu">
       <a id="confirmSelectionBtn" class="item"><i class="plus icon"></i>Confirm Selection</a>
-      <a id="clearSelectionBtn" class="item"><i class="exit icon"></i>Clear Selection</a>
+      <a id="clearSelectionBtn" class="item"> <i class="circular users icon"></i>Cancel Selection</a>
+      <a id="showAllGuestsBtn" class="item"><i class="circular users icon"></i>All Guests</a>
     </div>
   </div>
 </template>
 
-
-
-<template name="NotSoFast">
+<template name="NotSoFastModal">
     <div id="notSoFastDlg" class="ui modal">
-      <div class="ui vertical stripe stacked segment">
-        <div class="ui text container">
-             <h3 class="ui header aligned center">Sorry</h3>
-        <p>Only friends and family can attend the wedding </p>
-        <p>If you are part of our friends and family please povide the password on the invitation</p>
-
-        <div class="ui input fluid">
-          <input id="invitationPass" class="invitationPass" placeholder="Password from the invitation letter" type="text" value="">
-        </div>
-
-        </div>
+        {{> NotSoFastDlg}}
     </div>
-      <div class="actions">
-        <div class="ui button ok">OK</div>
-      </div>
-    </div>
+</template>
+<template name="NotSoFastDlg">
+<div class="ui vertical stacked segment">
+  <div class="ui text container">
+       <h3 class="ui header aligned center">Sorry</h3>
+  <p>Only friends and family can attend the wedding </p>
+  <p>If you are part of our friends and family please povide the password on the invitation</p>
+
+  <div class="ui input fluid">
+    <input id="invitationPass" class="invitationPass" placeholder="Password from the invitation letter" type="text" value="">
+  </div>
+  </div>
+</div>
 </template>
 <template name="LoginModal">
     <div id="loginModal" class="ui modal">

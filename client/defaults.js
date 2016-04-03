@@ -3,3 +3,4 @@ Session.setDefault('isUserSeated', false);
 Session.setDefault('currnetUserSeat', null);
 Session.setDefault('clickedSeats', []);
 Session.setDefault('selectedTable', null);
+Session.setDefault('listAllGuests', false);

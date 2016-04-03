@@ -69,9 +69,11 @@ if(Meteor.isClient){
 
     initContext = function() { //var doesn't work here
       canvas = document.getElementById("canvas");
-      context = canvas.getContext('2d');
-      width = canvas.width ;
-      height = canvas.height;
+      if (canvas){
+          context = canvas.getContext('2d');
+          canvas.width = width ;
+          canvas.height = height;
+      }
       // Start the setup of the table
       tables = [];
       if (typeof noTables !== 'undefined' && typeof noTablesPerRow !== 'undefined'){
@@ -80,7 +82,7 @@ if(Meteor.isClient){
     };
 
     update = function() {
-        if (typeof context !== 'undefined'){
+        if (typeof context !== 'undefined' && typeof width !== 'undefined' && typeof height !== 'undefined'){
             context.clearRect(0, 0, width, height);
             utils.drawTables(tables, context);
         }
@@ -147,5 +149,8 @@ if(Meteor.isClient){
   };
   isMyTakenSeat = function (seat) {
       return (seat.tableNo + '_' + seat.seat in myTakenSeats);
+  };
+  countGuestsAtTable = function(tableNumber){
+      return Seats.find({table:tableNumber}).count();
   };
 }

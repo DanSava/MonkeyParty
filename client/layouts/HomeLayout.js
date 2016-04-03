@@ -50,8 +50,7 @@ Template.ListWithPeopleAtTable.helpers({
 });
 Template.UserMenu.events({
     'click #confirmSelectionBtn': function (event, template) {
-        console.log('confirm selection cliced');
-
+        Session.set('CSFErrors', []); // reseting the error message if preveiouse error messages were present.
         Meteor.call("isUserSeated", Meteor.userId(), function(error, result){
             if(error){
                 console.log("error", error);
@@ -85,11 +84,16 @@ Template.UserMenu.events({
             }
         });
         myTakenSelectedSeats = [];
+    },
+    'click #showAllGuestsBtn': function (evt, tmp){
+        Session.set('listAllGuests', !Session.get('listAllGuests'));
     }
  });
 
 
 Template.PickYourSeat.rendered = function(){
+    width = $('.test111').width() - 20;
+    height = 0.6 * width;
     initContext();
     canvas.addEventListener("mousedown", function(event) {
         var selectedSeat = null;
@@ -122,45 +126,37 @@ Template.PickYourSeat.rendered = function(){
     });
 
     window.addEventListener('resize', function(event, tmp) {
+        width = $('.test111').width() - 20;
+        height = 0.6 * width;
+        initContext();
         // console.log(' resize detected!', window.innerWidth, window.innerHeight);
     });
 };
 
-Template.NotSoFast.events({
-    // 'keypress .invitationPass': function(evnt, tmp) {
-    //     console.log('here');
-    //      var pass = tmp.find('#invitationPass').value;
-    //      if (evnt.keyCode === 13 && pass !== '') {
-    //          console.log('pass check after enter');
-    //          Meteor.call("checkPassword", pass, function(error, result){
-    //              if(error){
-    //                  console.log("error", error);
-    //              }
-    //              if(result){
-    //                  console.log();
-    //                   $('#loginModal').modal('show');
-    //              }
-    //          });
-    //      }
-    //  }
+Template.NotSoFastDlg.events({
+    'keypress .invitationPass': function(evnt, tmp) {
+        console.log('here');
+         var pass = tmp.find('#invitationPass').value;
+         if (evnt.keyCode === 13 && pass !== '') {
+             console.log('pass check after enter');
+             Meteor.call("checkPassword", pass, function(error, result){
+                 if(error){
+                     console.log("error", error);
+                 }
+                 if(result){
+                     console.log();
+                      $('#loginModal').modal('show');
+                 }
+             });
+         }
+     }
  });
  Template.HomeLayout.events({
  'click #joinThePartyBtn': function () {
      if (!Meteor.user()){
          $('#notSoFastDlg').modal(
          {
-             onApprove : function() {
-               var pass = $('#invitationPass').val();
-               Meteor.call("checkPassword", pass, function(error, result){
-                   if(error){
-                       console.log("error", error);
-                   }
-                   if(result){
-                        console.log('password match');
-                         $('#loginModal').modal('show');
-                   }
-               });
-             }
+             onApprove : function() {}
            }).modal('show');
        }
      }
@@ -168,8 +164,30 @@ Template.NotSoFast.events({
 Template.HomeBigHeaderImage.helpers({
     joinThePartyBtnLbl : function(){
         if (Meteor.user()) {
-            return "Welcome " + Meteor.user().username;
+            return "Welcome " + Meteor.user().profile.name;
         }
         return "Join the Party";
     }
+});
+Template.HomeContent.helpers({
+    nrGuests: function(){
+        return Seats.find().count();
+    }
+});
+Template.GuestList.helpers({
+    listAllGuests: function() {
+        return Session.get('listAllGuests');
+    },
+    guestsByTable: function(){
+        var guestsbytable = [];
+        if (Session.get('listAllGuests')){
+            for (var i =0; i < noTables; i++){
+                if (countGuestsAtTable(i) > 0) {
+                    guestsbytable.push(Seats.find({table:i}));
+                }
+            }
+        }
+        return guestsbytable;
+    }
+
 });
