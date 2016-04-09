@@ -40,8 +40,8 @@ Template.ConfirmSelectionDialog.helpers({
         guestSeats.forEach(function(el, index, array) {
             var seatInfo = {
                 'seat':el.seat + 1,
-                'table': el.tableNo + 1,
-                'key': el.tableNo  + '_' + el.seat,
+                'table': el.tableId,
+                'key': el.tableId  + '_' + el.seat,
             };
             seatkeys.push(seatInfo);
          });
@@ -61,7 +61,8 @@ Template.ConfirmSelectionDialog.helpers({
     currentUserTable : function () {
         var currentUserSeat = Session.get('currnetUserSeat');
         if (currentUserSeat){
-            return currentUserSeat.tableNo + 1; // might want to check when table names are added to return the table name
+
+            return currentUserSeat.tableId;
         }
     },
     currentUserSeat : function () {
@@ -99,9 +100,9 @@ Template.ConfirmSelectionDialog.events({
                     var guest = {
                         'name': Meteor.user().profile.name,
                         'seat':currentUserSeat.seat,
-                        'table':currentUserSeat.tableNo,
+                        'table':currentUserSeat.tableId,
                         'plusOne': false,
-                        'seatKey':currentUserSeat.tableNo +'_' + currentUserSeat.seat
+                        'seatKey':currentUserSeat.tableId +'_' + currentUserSeat.seat
                     };
                     Meteor.call("addGuest", guest, function(error, result){
                         if(error){
@@ -137,9 +138,9 @@ Template.ConfirmSelectionDialog.events({
                 var currentUserGuest = {
                     'name': Meteor.user().profile.name,
                     'seat':currentUserSeat.seat,
-                    'table':currentUserSeat.tableNo,
+                    'table':currentUserSeat.tableId,
                     'plusOne': false,
-                    'seatKey':currentUserSeat.tableNo +'_' + currentUserSeat.seat
+                    'seatKey':currentUserSeat.tableId +'_' + currentUserSeat.seat
                 };
                 Meteor.call("addGuest", currentUserGuest, function(error, result){
                     if(error){
@@ -155,6 +156,3 @@ Template.ConfirmSelectionDialog.events({
         }
     }
 });
-Template.ConfirmSelectionDialog.onRendered = function(){
-console.log(' renderde' );    
-};

@@ -50,7 +50,6 @@ Template.LoginDlg.events({
         clearErros();
       },
       "click #submitBtn": function(event, template){
-          console.log('here');
           if(Session.get("signUp")){
               userData = {
                   'firstname': $('#firstname').val(),

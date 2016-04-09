@@ -1,6 +1,18 @@
 Meteor.methods({
-    addRemoveTable: function (increment) {
-        SettingVariables.update ({index: "000"}, {$inc: {nrTables: increment} });
+    addTable: function (table) {
+        if (table !== null) {
+            Tables.insert(table);
+        }
+    },
+    removeTable: function (table) {
+        if (table !== null) {
+            Tables.remove({_id:table.tableId});
+        }
+    },
+    updateTableName : function(table){
+        if (table) {
+            return Tables.update({_id:table.tableId}, {$set:{name: table.tableName} });
+        }
     },
     checkPassword: function (txt){
         return txt === 'xxx';
@@ -8,7 +20,7 @@ Meteor.methods({
     isUserSeated: function (id){
         // need to restrict the search also on the user.profile.name
         var currentUserSeat = Seats.findOne({"owner":Meteor.userId(), "plusOne":false});
-        if (typeof currentUserSeat !== 'undefined'){
+        if (typeof currentUserSeat !== 'undefined') {
             return currentUserSeat;
         }
         return false;
@@ -50,7 +62,7 @@ Meteor.methods({
     },
     clearSeats: function (selectedSeats) {
         selectedSeats.forEach(function(el, index, array) {
-            var key = el.tableNo + "_" + el.seat;
+            var key = el.tableId + "_" + el.seat;
             Seats.remove({owner:Meteor.userId(), seatKey:key});
          });
 

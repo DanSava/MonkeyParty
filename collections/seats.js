@@ -29,8 +29,8 @@ SeatsSchema = new SimpleSchema({
         label: "Seat Number"
     },
     table: {
-        type: Number,
-        label: "Table Number"
+        type: String,
+        label: "Table id"
     },
     plusOne: {
         type: Boolean,
@@ -38,7 +38,7 @@ SeatsSchema = new SimpleSchema({
     },
     seatKey: {
         type: String,
-        label: "The seat key tableNo_seatNo"
+        label: "The seat key tableId_seatNo"
     },
 });
 

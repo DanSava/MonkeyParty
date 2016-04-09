@@ -9,13 +9,11 @@ Template.Test.events({
         $('#modalView')
           .modal({
             onDeny    : function(){
-              console.log('canceled');
               return false;
             },
             onApprove : function() {
               var modalInputValue = $('#modalInputValue').val();
               Session.set("formValue", modalInputValue);
-              console.log(modalInputValue);
             }
           }).modal('show');
       },
@@ -27,12 +25,11 @@ Template.Test.rendered = function(){
   this.$('.test').popup({
       inline   : true,
       hoverable: true,
-      position : 'bottom left',
+      position : 'top left',
       delay: {
         show: 300,
         hide: 800
       }
   });
   this.$('.ui.embed').embed();
-
 };

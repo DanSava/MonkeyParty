@@ -1,0 +1,26 @@
+<template name="AddTableModal">
+    <div id="addTableDlg" class="ui modal">
+            {{> AddTableDialog}}
+    </div>
+</template>
+
+<template name="AddTableDialog">
+    <div class="ui vertical stacked segment">
+        <div class="ui text container">
+            <h3 class="ui header aligned center">Edit Table Name</h3>
+            <div class="ui stacked segment">
+                <div class="ui fluid form">
+                        <div class="field">
+                            <div class="ui label fluid">
+                                Table Name
+                            </div>
+                            <div class="ui fluid input">
+                              <input id="tblNameInput" placeholder="" type="text" value="{{tableName}}">
+                            </div>
+                        </div>
+                    <div id="submitBtn" class="ui fluid large green submit button">Confirm</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

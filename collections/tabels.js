@@ -1,4 +1,5 @@
 Tables = new Mongo.Collection("tables");
+
 Tables.allow({
     insert: function(){
         return true;
@@ -12,9 +13,12 @@ Tables.allow({
 });
 
 TablesSchema = new SimpleSchema({
-    index:{
-        type: Number,
-        label:"Table index"    
+    owner: {
+        type: String,
+        label: "Owner",
+        autoValue:function () {
+            return this.userId;
+        }
     },
     name:{
         type: String,
@@ -30,4 +34,4 @@ TablesSchema = new SimpleSchema({
     }
 });
 
-Tables.attachSchema( TablesSchema);
+Tables.attachSchema(TablesSchema);

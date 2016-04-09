@@ -1,6 +1,7 @@
 if(Meteor.isClient){
-    Meteor.subscribe("settingVariables");
     Meteor.subscribe("allSeats");
+    Meteor.subscribe("tables");
+
     selectedSeats = [];
     myTakenSelectedSeats = [];
 
@@ -15,31 +16,34 @@ if(Meteor.isClient){
 
     isSeatSelected = function(seat){
         for(var i=0; i<selectedSeats.length; i++) {
-                if (selectedSeats[i].seat === seat.seat && selectedSeats[i].tableNo === seat.tableNo) return true;
+                if (selectedSeats[i].seat === seat.seat && selectedSeats[i].tableId === seat.tableId) return true;
         }
         return false;
     };
+
     isInMyTakenSelectedSeats = function (seat) {
         for(var i=0; i<myTakenSelectedSeats.length; i++) {
-                if (myTakenSelectedSeats[i].seat === seat.seat && myTakenSelectedSeats[i].tableNo === seat.tableNo) return true;
+                if (myTakenSelectedSeats[i].seat === seat.seat && myTakenSelectedSeats[i].tableId === seat.tableId) return true;
         }
         return false;
     };
 
     removeSeatFromSelection = function (seat){
         for(var i=0; i<selectedSeats.length; i++) {
-                if (selectedSeats[i].seat === seat.seat && selectedSeats[i].tableNo === seat.tableNo) {
-                    selectedSeats.splice(i, 1);
-                }
+            if (selectedSeats[i].seat === seat.seat && selectedSeats[i].tableId === seat.tableId) {
+                selectedSeats.splice(i, 1);
+            }
         }
     };
+
     removeSeatFromMyTakenSelectedSeats = function (seat) {
         for(var i=0; i<myTakenSelectedSeats.length; i++) {
-                if (myTakenSelectedSeats[i].seat === seat.seat && myTakenSelectedSeats[i].tableNo === seat.tableNo) {
-                    myTakenSelectedSeats.splice(i, 1);
-                }
+            if (myTakenSelectedSeats[i].seat === seat.seat && myTakenSelectedSeats[i].tableId === seat.tableId) {
+                myTakenSelectedSeats.splice(i, 1);
+            }
         }
     };
+
     addSelectedSeat = function(seat){
         var maxSelectedSeatCount = 5 - countMyTakenSeats();
         if (countSelectedSeats() < maxSelectedSeatCount) {
@@ -57,12 +61,15 @@ if(Meteor.isClient){
         }
         return selectedSeats.length;
     };
+
     addSeatToMyTakenSelectedSeats = function(seat){
-        if (!isInMyTakenSelectedSeats(seat)){
+        if (!isInMyTakenSelectedSeats(seat)) {
             myTakenSelectedSeats.push(seat);
+            Session.set('takenSelectedSeats', myTakenSelectedSeats);
         }
         else{
             removeSeatFromMyTakenSelectedSeats(seat);
+            Session.set('takenSelectedSeats', myTakenSelectedSeats);
         }
         return myTakenSelectedSeats.length;
     };
@@ -76,9 +83,8 @@ if(Meteor.isClient){
       }
       // Start the setup of the table
       tables = [];
-      if (typeof noTables !== 'undefined' && typeof noTablesPerRow !== 'undefined'){
-          tables = tableUtils.setupTables(noTables, noTablesPerRow, width, height);
-      }
+      var noTablesPerRow = 4;
+      tables = tableUtils.setupTables(noTablesPerRow, width, height);
     };
 
     update = function() {
@@ -93,21 +99,21 @@ if(Meteor.isClient){
           var tableObj = null;
           tables.forEach(function(el, index, array) {
           if (el.isMouseOver(x, y)) {
-               tableObj = {'tableNo': index};
+              tableObj = {'tableId': el.id, 'tableName':el.name};
             }
       });
           return tableObj;
     };
 
     getClickedSeat = function(x, y) {
-      var seatInfo = null;
+      var foundSeat = null;
       tables.forEach(function(el, index, array) {
               var seat = el.getClickedSeat(x, y);
               if (seat !== null) {
-                  seatInfo =  {'tableNo': index, 'seat': seat.seatNo};
+                  foundSeat = {'tableId': el.id, 'seat': seat.seatNo};
               }
       });
-      return seatInfo;
+      return foundSeat;
   };
 
   getTakenSeats = function() {
@@ -125,6 +131,7 @@ if(Meteor.isClient){
       }
       return takenSeats;
   };
+
   getMyTakenSeats =  function () {
       var takenSeats = {};
       var seats = Seats.find({'owner':Meteor.userId()}).fetch();
@@ -140,17 +147,25 @@ if(Meteor.isClient){
       }
       return takenSeats;
   };
+
   countMyTakenSeats = function () {
       return Seats.find({'owner':Meteor.userId()}).count();
   };
 
   isThisSeatTaken = function (seat) {
-      return (seat.tableNo + '_' + seat.seat in takenSeats);
+      return (seat.tableId + '_' + seat.seat in takenSeats);
   };
+
   isMyTakenSeat = function (seat) {
-      return (seat.tableNo + '_' + seat.seat in myTakenSeats);
+      return (seat.tableId + '_' + seat.seat in myTakenSeats);
   };
-  countGuestsAtTable = function(tableNumber){
-      return Seats.find({table:tableNumber}).count();
+
+  countGuestsAtTable = function(tableId){
+      // tableNumber will become talbeId
+      return Seats.find({table:tableId}).count();
+  };
+  resetSelections = function() {
+    myTakenSelectedSeats = [];
+    selectedSeats = [];
   };
 }

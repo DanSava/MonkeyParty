@@ -61,22 +61,22 @@ utils = {
       utils.drawParticle(el, context);
     });
   },
-  drawSeat: function(seat, tableIdx, seatIdx, context){
+  drawSeat: function(seat, tableId, seatIdx, context){
       context.save();
       context.beginPath();
       var isSeatSelected = false;
       var isThisSeatTakeByMeAndSelected = false;
 
-      var isSeatTaken = (tableIdx + '_' + seatIdx in takenSeats);
-      var myTakenSeat = (tableIdx + '_' + seatIdx in myTakenSeats);
+      var isSeatTaken = (tableId + '_' + seatIdx in takenSeats);
+      var myTakenSeat = (tableId + '_' + seatIdx in myTakenSeats);
 
       for(var j=0; j<myTakenSelectedSeats.length; j++) {
-          if (myTakenSelectedSeats[j].seat === seatIdx && myTakenSelectedSeats[j].tableNo === tableIdx) {
+          if (myTakenSelectedSeats[j].seat === seatIdx && myTakenSelectedSeats[j].tableId === tableId) {
                 isThisSeatTakeByMeAndSelected = true;
           }
       }
       for(var i=0; i<selectedSeats.length; i++) {
-          if (selectedSeats[i].seat === seatIdx && selectedSeats[i].tableNo === tableIdx) {
+          if (selectedSeats[i].seat === seatIdx && selectedSeats[i].tableId === tableId) {
                 isSeatSelected = true;
           }
       }
@@ -118,31 +118,25 @@ utils = {
       context.restore();
 
   },
-  drawSeats:function(seats, tableIdx,context) {
+  drawSeats:function(seats, tableId, context) {
       seats.forEach(function(el, index, array) {
-        utils.drawSeat(el, tableIdx, index, context);
+        utils.drawSeat(el, tableId, index, context);
       });
   },
-  drawTable: function (table, idx, context){
+  drawTable: function (table, context){
       var part = table.particle;
       context.save();
       // draw the big table
       context.beginPath();
       context.arc(part.x, part.y, part.radius , 0, Math.PI * 2, false);
       context.font = 'bold 20pt Calibri';
-      if (idx >= 10){
-          context.fillText(idx + 1 , part.x - 10,  part.y + 5);
-      }
-      else {
-          context.fillText(idx + 1 , part.x - 5,  part.y + 5);
-      }
 
       if (table.mouseOver) {
           context.lineWidth = 5;
           context.stroke() ;
         }
         var selectedTable = Session.get("selectedTable");
-        var isTableSelected = selectedTable && selectedTable.tableNo === idx;
+        var isTableSelected = selectedTable && selectedTable.tableId === table.id;
         if (isTableSelected){
             context.lineWidth = 5;
             context.stroke() ;
@@ -154,12 +148,12 @@ utils = {
       context.restore();
 
       //draw the table seats
-      utils.drawSeats(table.seats, idx, context);
+      utils.drawSeats(table.seats, table.id, context);
 
   },
   drawTables: function (tables, context){
       tables.forEach(function(el, index, array) {
-        utils.drawTable(el, index, context);
+        utils.drawTable(el, context);
       });
   },
 
@@ -252,9 +246,9 @@ particle = {
           }
       }
      };
-     // =====================================================
-     // =====================================================
-     // =====================================================
+ // =====================================================
+ // SEAT
+ // =====================================================
      seat = {
        particle : null,
        mouseOver: false,
@@ -291,19 +285,23 @@ particle = {
        },
      };
 // =====================================================
-// =====================================================
+// Table Js
 // =====================================================
      table = {
        particle : null,
        nrSeats: 0,
        seats:[],
        mouseOver: false,
+       id:'',
+       name:'',
 
-       create : function (x, y, radius, nrSeats) {
+       create : function (x, y, radius, nrSeats, id, name) {
          var obj = Object.create(this);
          obj.particle = particle.create(x, y, 0, 0, 0, radius);
          // add the seats to the table
          obj.seats = [];
+         obj.id = id;
+         obj.name = name;
          var slice = Math.PI * 2 / nrSeats;
          for (var i = 0; i < nrSeats; i += 1) {
              angle = i * slice;
@@ -353,26 +351,28 @@ particle = {
      };
 
 tableUtils = {
-     setupTables: function(noTables, NoTablesPerRow, width, height){
-        var tables = [];
-        var tableRadius = height * 2 / 28,
-            no_table_rows = Math.ceil(noTables /NoTablesPerRow),
-            prevHight = height / (no_table_rows * 2),
-            prevWidth = width / (NoTablesPerRow * 2);
-
-            // Init the tables
-            for (i = 0; i < no_table_rows; i++) {
-                for (j = 0; j < NoTablesPerRow; j++){
-                    if (i * NoTablesPerRow + j + 1 <= noTables){
-                        tables.push(table.create(prevWidth, prevHight, tableRadius, 10));
-                    }
-                    prevWidth += width * (1/NoTablesPerRow);
-                }
-                prevHight += height / no_table_rows;
-                prevWidth = width/(NoTablesPerRow * 2);
-            }
-        return tables;
-    }
+setupTables: function(NoTablesPerRow, width, height){
+   var tables = [];
+   var tableRadius = height * 2 / 28,
+    // Will need to be by user id later when commercial product is developed.
+       tableCol = Tables.find().fetch(),
+       noTables = tableCol.length,
+       no_table_rows = Math.ceil(tableCol.length /NoTablesPerRow),
+       prevHight = height / (no_table_rows * 2),
+       prevWidth = width / (NoTablesPerRow * 2);
+       // Init the tables
+       for (i = 0; i < no_table_rows; i++) {
+           for (j = 0; j < NoTablesPerRow; j++) {
+               if (i * NoTablesPerRow + j + 1 <= noTables) {
+                   var idx = i * NoTablesPerRow  + j;
+                   tables.push(table.create(prevWidth, prevHight, tableRadius, tableCol[idx].nrSeats, tableCol[idx]._id, tableCol[idx].name));
+               }
+               prevWidth += width * (1/NoTablesPerRow);
+           }
+           prevHight += height / no_table_rows;
+           prevWidth = width/(NoTablesPerRow * 2);
+       }
+   return tables;
+}
 };
-
 }

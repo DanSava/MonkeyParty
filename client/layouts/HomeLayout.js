@@ -1,53 +1,65 @@
-Template.AdminMenu.events({
-    "click #addTable": function(event, template){
-        Meteor.call("addRemoveTable", 1);
-    },
-    "click #removeTable": function(event, template){
-        Meteor.call("addRemoveTable", -1);
-    }
-});
-Template.UserMenu.helpers({
-    selectionMade: function () {
-        // Does not work like this is called only once when the page is loaded for the first time. is not updating when a selection is mande
-        console.log( 'called ');
-       if (typeof selectedSeats !== 'undefined' && selectedSeats.length > 0){
-           return '';
-       }
-       return 'disabled';
-    }
-});
-
-Template.PickYourSeat.helpers({
-    initSettings: function () {
-        settingsInfo = SettingVariables.find().fetch()[0];
-        takenSeats = getTakenSeats();
-        myTakenSeats = getMyTakenSeats();
-
-        if (typeof settingsInfo !== 'undefined'){
-            noTables = settingsInfo.nrTables;
-            noSeatsPerTabel = settingsInfo.nrSeatsPerTable;
-            maxNrOfSeatsPerTable = settingsInfo.maxNrOfSeatsPerTable;
-            noTablesPerRow = settingsInfo.nrOfTablesPerRow;
-        }
-        if(typeof canvas !== 'undefined') {
-            initContext();
-        }
-        update();
-        return SettingVariables.find();
-    },
-    isTableSelected: function  () {
-        console.log(Session.get('selectedTable'));
-        return !Session.equals('selectedTable', null);
-    }
-});
+////////////////////////////////////////////////////////////////////////////////
+//ListWithPeopleAtTable
+////////////////////////////////////////////////////////////////////////////////
 Template.ListWithPeopleAtTable.helpers({
     guestsSeatingAtTable: function (){
         if(!Session.equals('selectedTable', null)){
-            selectedTableNo = Session.get('selectedTable').tableNo;
-            return Seats.find({table:selectedTableNo});
+            selectedTableId = Session.get('selectedTable').tableId;
+            return Seats.find({table:selectedTableId});
+        }
+    },
+    selectedTableName: function () {
+        selTable = Session.get('selectedTable');
+        if (selTable) {
+            return selTable.tableName;
         }
     }
 });
+
+
+////////////////////////////////////////////////////////////////////////////////
+//AdminMenu
+////////////////////////////////////////////////////////////////////////////////
+Template.AdminMenu.events({
+    "click #addTable": function(event, template){
+        var table = {
+            'name':"xx",
+            'desc': "xxx",
+            'nrSeats': 10
+        };
+        Meteor.call("addTable", table);
+    },
+    "click #removeTable": function(event, template) {
+        var selTable =  Session.get('selectedTable');
+        if (selTable) {
+            Meteor.call("removeTable", selTable);
+            resetSelections();
+        }
+    },
+    "click #editTableName": function(event, template) {
+        var selTable =  Session.get('selectedTable');
+        if (selTable) {
+            $('#addTableDlg').modal('show');
+        }
+    },
+
+});
+
+
+////////////////////////////////////////////////////////////////////////////////
+//UserMenu
+////////////////////////////////////////////////////////////////////////////////
+Template.UserMenu.helpers({
+    remainingInvitations: function() {
+        // Retrurn the number guests that can be added by the current user.
+        return 5 - countMyTakenSeats();
+    },
+    takenSeatsSelected: function() {
+        var x = Session.get('takenSelectedSeats');
+        return x.length > 0;
+    }
+});
+
 Template.UserMenu.events({
     'click #confirmSelectionBtn': function (event, template) {
         Session.set('CSFErrors', []); // reseting the error message if preveiouse error messages were present.
@@ -56,10 +68,8 @@ Template.UserMenu.events({
                 console.log("error", error);
                 Session.set('isUserSeated', false);
             }
-            Session.set('isUserSeated', true);
             if (result){
-                console.log(result);
-                // Session.set("currnetUserSeat", something);
+                Session.set('isUserSeated', true);
             }
             else{
                 Session.set('isUserSeated', false);
@@ -74,7 +84,7 @@ Template.UserMenu.events({
             alert('Please selecte a seat first');
         }
     },
-    'click #clearSelectionBtn': function (evt, tmp){
+    'click #confirmClearSelection': function (evt, tmp){
         Meteor.call("clearSeats", myTakenSelectedSeats, function(error, result){
             if(error){
                 console.log("error", error);
@@ -84,15 +94,48 @@ Template.UserMenu.events({
             }
         });
         myTakenSelectedSeats = [];
+        tmp.$('#clearSelectionBtn').popup('hide');
+        Session.set('takenSelectedSeats', []);
     },
-    'click #showAllGuestsBtn': function (evt, tmp){
-        Session.set('listAllGuests', !Session.get('listAllGuests'));
-    }
  });
 
+////////////////////////////////////////////////////////////////////////////////
+//PickYourSeat
+////////////////////////////////////////////////////////////////////////////////
+ Template.PickYourSeat.helpers({
+     initSettings: function () {
+         takenSeats = getTakenSeats();
+         myTakenSeats = getMyTakenSeats();
+
+         if(typeof canvas !== 'undefined') {
+             initContext();
+         }
+         update();
+         return Tables.find().count();
+     },
+     isTableSelected: function  () {
+         return !Session.equals('selectedTable', null);
+     }
+ });
 
 Template.PickYourSeat.rendered = function(){
-    width = $('.test111').width() - 20;
+    this.$('#confirmSelectionBtn').popup({
+        position : 'top left',
+        delay: {
+          show: 800,
+        }
+    });
+    this.$('#clearSelectionBtn').popup({
+        position : 'bottom right',
+        inline   : true,
+        hoverable: true,
+        delay: {
+          show: 300,
+          hide: 100
+        }
+    });
+
+    width = $('.canvas_element').width() - 20;
     height = 0.6 * width;
     initContext();
     canvas.addEventListener("mousedown", function(event) {
@@ -112,7 +155,6 @@ Template.PickYourSeat.rendered = function(){
                 }
             }
         }
-        console.log(selectedSeats, selectedTable);
     });
 
     canvas.addEventListener("mousemove", function(event) {
@@ -120,25 +162,26 @@ Template.PickYourSeat.rendered = function(){
         tables.forEach(function(el, index, array) {
             if (el.checkMouseOver(event.offsetX, event.offsetY)) {
               document.body.style.cursor = "pointer";
-            //   console.log('Mouse click over table:', index + 1);
           }
       });
     });
 
     window.addEventListener('resize', function(event, tmp) {
-        width = $('.test111').width() - 20;
+        width = $('.canvas_element').width() - 20;
         height = 0.6 * width;
         initContext();
         // console.log(' resize detected!', window.innerWidth, window.innerHeight);
     });
-};
+ };
 
+
+////////////////////////////////////////////////////////////////////////////////
+//NotSoFastDlg
+////////////////////////////////////////////////////////////////////////////////
 Template.NotSoFastDlg.events({
     'keypress .invitationPass': function(evnt, tmp) {
-        console.log('here');
          var pass = tmp.find('#invitationPass').value;
          if (evnt.keyCode === 13 && pass !== '') {
-             console.log('pass check after enter');
              Meteor.call("checkPassword", pass, function(error, result){
                  if(error){
                      console.log("error", error);
@@ -149,8 +192,23 @@ Template.NotSoFastDlg.events({
                  }
              });
          }
-     }
+    },
+    'click #checkPassBtn': function (evnt, tmp) {
+        var pass = tmp.find('#invitationPass').value;
+        Meteor.call("checkPassword", pass, function(error, result) {
+            if(error){
+                console.log("error", error);
+            }
+            if(result){
+                 $('#loginModal').modal('show');
+            }
+        });
+    }
  });
+
+ ////////////////////////////////////////////////////////////////////////////////
+ //HomeLayout
+ ////////////////////////////////////////////////////////////////////////////////
  Template.HomeLayout.events({
  'click #joinThePartyBtn': function () {
      if (!Meteor.user()){
@@ -161,6 +219,10 @@ Template.NotSoFastDlg.events({
        }
      }
  });
+
+ ////////////////////////////////////////////////////////////////////////////////
+ //HomeBigHeaderImage
+ ////////////////////////////////////////////////////////////////////////////////
 Template.HomeBigHeaderImage.helpers({
     joinThePartyBtnLbl : function(){
         if (Meteor.user()) {
@@ -169,25 +231,34 @@ Template.HomeBigHeaderImage.helpers({
         return "Join the Party";
     }
 });
+
+////////////////////////////////////////////////////////////////////////////////
+//HomeContent
+////////////////////////////////////////////////////////////////////////////////
 Template.HomeContent.helpers({
     nrGuests: function(){
         return Seats.find().count();
     }
 });
+
+////////////////////////////////////////////////////////////////////////////////
+//GuestList
+////////////////////////////////////////////////////////////////////////////////
 Template.GuestList.helpers({
-    listAllGuests: function() {
-        return Session.get('listAllGuests');
-    },
     guestsByTable: function(){
         var guestsbytable = [];
-        if (Session.get('listAllGuests')){
-            for (var i =0; i < noTables; i++){
-                if (countGuestsAtTable(i) > 0) {
-                    guestsbytable.push(Seats.find({table:i}));
-                }
+        var tablesList = Tables.find().fetch();
+        for (var i =0; i < tablesList.length; i++){
+            if (countGuestsAtTable(tablesList[i]._id) > 0) {
+                guestsbytable.push(Seats.find({table:tablesList[i]._id}));
             }
         }
         return guestsbytable;
+    },
+    selectedTableName: function () {
+        selTable = Session.get('selectedTable');
+        if (selTable) {
+            return selTable.tableName;
+        }
     }
-
 });
