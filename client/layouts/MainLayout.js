@@ -22,14 +22,5 @@ Template.Test.events({
       }
 });
 Template.Test.rendered = function(){
-  this.$('.test').popup({
-      inline   : true,
-      hoverable: true,
-      position : 'top left',
-      delay: {
-        show: 300,
-        hide: 800
-      }
-  });
-  this.$('.ui.embed').embed();
+  this.$('.test').dropdown();
 };

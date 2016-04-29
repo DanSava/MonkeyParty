@@ -99,12 +99,12 @@ utils = {
           context.fillStyle = '#0066ff';
           context.fill();
       }
-      else if (isSeatTaken && !myTakenSeat){
-          context.fillStyle = '#e60000';
-          context.fill();
-      }
       else if (isThisSeatTakeByMeAndSelected) {
           context.fillStyle = '#00ccff';
+          context.fill();
+      }
+      else if (isSeatTaken && !myTakenSeat){
+          context.fillStyle = '#e60000';
           context.fill();
       }
       else if (myTakenSeat) {

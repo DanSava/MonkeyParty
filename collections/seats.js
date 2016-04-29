@@ -40,6 +40,13 @@ SeatsSchema = new SimpleSchema({
         type: String,
         label: "The seat key tableId_seatNo"
     },
+    createdAt: {
+        type: Date,
+        label: "Created At",
+        autoValue: function() {
+            return new Date();
+        }
+    }
 });
 
 Seats.attachSchema( SeatsSchema);

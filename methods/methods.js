@@ -60,12 +60,19 @@ Meteor.methods({
         }
         return takenSeats.length > 0;
     },
-    clearSeats: function (selectedSeats) {
+    removeGuest: function (selectedSeats) {
+      if (Roles.userIsInRole(Meteor.user(),'super')) {
+        selectedSeats.forEach(function(el, index, array) {
+            var key = el.tableId + "_" + el.seat;
+            Seats.remove({seatKey:key});
+         });
+      }
+      else {
         selectedSeats.forEach(function(el, index, array) {
             var key = el.tableId + "_" + el.seat;
             Seats.remove({owner:Meteor.userId(), seatKey:key});
          });
 
-
+      }
     }
 });

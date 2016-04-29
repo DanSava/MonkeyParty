@@ -86,7 +86,6 @@ Template.LoginDlg.events({
                        Session.set('loginErros', loginFormErrors);
                    }
                    else{
-                       console.log('user signed in');
                         $('#loginModal').modal('hide');
                    }
                  });

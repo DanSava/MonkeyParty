@@ -62,7 +62,28 @@ if(Meteor.isClient){
         return selectedSeats.length;
     };
 
+    AdminAddSelectedSeat = function(seat){
+        if (!isSeatSelected(seat)){
+            selectedSeats.push(seat);
+        }
+        else{
+            removeSeatFromSelection(seat);
+        }
+        return selectedSeats.length;
+    };
+
     addSeatToMyTakenSelectedSeats = function(seat){
+        if (!isInMyTakenSelectedSeats(seat)) {
+            myTakenSelectedSeats.push(seat);
+            Session.set('takenSelectedSeats', myTakenSelectedSeats);
+        }
+        else{
+            removeSeatFromMyTakenSelectedSeats(seat);
+            Session.set('takenSelectedSeats', myTakenSelectedSeats);
+        }
+        return myTakenSelectedSeats.length;
+    };
+    AdminAddSeatToMyTakenSelectedSeats = function(seat){
         if (!isInMyTakenSelectedSeats(seat)) {
             myTakenSelectedSeats.push(seat);
             Session.set('takenSelectedSeats', myTakenSelectedSeats);
@@ -110,7 +131,7 @@ if(Meteor.isClient){
       tables.forEach(function(el, index, array) {
               var seat = el.getClickedSeat(x, y);
               if (seat !== null) {
-                  foundSeat = {'tableId': el.id, 'seat': seat.seatNo};
+                  foundSeat = {'tableId': el.id, 'seat': seat.seatNo, 'tableName': el.name};
               }
       });
       return foundSeat;
@@ -167,5 +188,12 @@ if(Meteor.isClient){
   resetSelections = function() {
     myTakenSelectedSeats = [];
     selectedSeats = [];
+    Session.set('selectedTable', null);
+  };
+  guestsAtTable = function (table_id) {
+      return Seats.find({table:table_id}).fetch();
+  };
+  isSuperUser = function(){
+    return Roles.userIsInRole(Meteor.user(),'super');
   };
 }

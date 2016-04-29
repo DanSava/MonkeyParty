@@ -15,7 +15,7 @@ function validateCSF(selectionData) {
     if(seatkeys.length > 0){
         seatkeys.forEach(function(el, index, array) {
             if (selectionData[el.key] === '') {
-                CSFErrors.push('Please enter a guest name for table ' + el.table + ' seat ' + el.seat);
+                CSFErrors.push('Please enter a guest name for table ' + el.tableName + ' seat ' + el.seat);
             }
          });
     }
@@ -29,7 +29,10 @@ Template.ConfirmSelectionDialog.helpers({
         var isUserSeated = Session.get("isUserSeated");
         guestSeats = [];
         var currentUserSeat = Session.get("currnetUserSeat");
-        if (typeof clickedSeats !== 'undefined' && clickedSeats.length > 0 && !isUserSeated ) {
+        if(typeof clickedSeats !== 'undefined' && isSuperUser()) {
+          guestSeats = clickedSeats;
+        }
+        else if (typeof clickedSeats !== 'undefined' && clickedSeats.length > 0 && !isUserSeated ) {
             Session.set('currnetUserSeat', clickedSeats[0]);
             guestSeats = clickedSeats.slice(1, clickedSeats.length);
         }
@@ -42,6 +45,7 @@ Template.ConfirmSelectionDialog.helpers({
                 'seat':el.seat + 1,
                 'table': el.tableId,
                 'key': el.tableId  + '_' + el.seat,
+                'tableName': el.tableName,
             };
             seatkeys.push(seatInfo);
          });
@@ -49,6 +53,9 @@ Template.ConfirmSelectionDialog.helpers({
         return seatkeys;
     },
     isCurrentUserSeatingVisible : function() {
+        if(isSuperUser()) {
+          return false;
+        }
         var isUserSeated = Session.get("isUserSeated");
         if(typeof isUserSeated !== 'undefined'){
             return !Session.get("isUserSeated");
@@ -62,7 +69,7 @@ Template.ConfirmSelectionDialog.helpers({
         var currentUserSeat = Session.get('currnetUserSeat');
         if (currentUserSeat){
 
-            return currentUserSeat.tableId;
+            return currentUserSeat.tableName;
         }
     },
     currentUserSeat : function () {
@@ -96,7 +103,7 @@ Template.ConfirmSelectionDialog.events({
              });
             if (validateCSF(selectionData)) {
                 // Adding the current user first if needed
-                if(!isUserSeated) {
+                if(!isUserSeated && !isSuperUser()) {
                     var guest = {
                         'name': Meteor.user().profile.name,
                         'seat':currentUserSeat.seat,
@@ -115,7 +122,7 @@ Template.ConfirmSelectionDialog.events({
                     var guest = {
                         'name': selectionData[el.key],
                         'seat':el.seat - 1,
-                        'table':el.table - 1,
+                        'table':el.table,
                         'plusOne': true,
                         'seatKey':el.key
                     };

@@ -5,17 +5,42 @@ Template.ListWithPeopleAtTable.helpers({
     guestsSeatingAtTable: function (){
         if(!Session.equals('selectedTable', null)){
             selectedTableId = Session.get('selectedTable').tableId;
-            return Seats.find({table:selectedTableId});
+            return guestsAtTable(selectedTableId);
         }
     },
     selectedTableName: function () {
         selTable = Session.get('selectedTable');
         if (selTable) {
-            return selTable.tableName;
+            return Tables.findOne({_id:selTable.tableId}).name;
         }
+    },
+    formatDate:  function (date) {
+      return moment(date).fromNow();
     }
 });
 
+////////////////////////////////////////////////////////////////////////////////
+//GuestList
+////////////////////////////////////////////////////////////////////////////////
+Template.GuestList.helpers({
+    guestsByTable: function() {
+        var guestsbytable = [];
+        var tablesList = Tables.find().fetch();
+        for (var i =0; i < tablesList.length; i++) {
+            if (countGuestsAtTable(tablesList[i]._id) > 0) {
+                var table = {
+                    'name': tablesList[i].name,
+                    'seats': guestsAtTable(tablesList[i]._id),
+                };
+                guestsbytable.push(table);
+            }
+        }
+        return guestsbytable;
+    },
+    formatDate:  function (date) {
+      return moment(date).fromNow();
+    }
+});
 
 ////////////////////////////////////////////////////////////////////////////////
 //AdminMenu
@@ -32,8 +57,8 @@ Template.AdminMenu.events({
     "click #removeTable": function(event, template) {
         var selTable =  Session.get('selectedTable');
         if (selTable) {
-            Meteor.call("removeTable", selTable);
-            resetSelections();
+          resetSelections();
+          Meteor.call("removeTable", selTable);
         }
     },
     "click #editTableName": function(event, template) {
@@ -42,6 +67,28 @@ Template.AdminMenu.events({
             $('#addTableDlg').modal('show');
         }
     },
+    "click #adminRemoveGuest": function(event, template) {
+      Meteor.call("removeGuest", myTakenSelectedSeats, function(error, result){
+          if(error){
+              console.log("error", error);
+          }
+          if(result){
+
+          }
+      });
+      myTakenSelectedSeats = [];
+    },
+    "click #adminAddGuest": function(event, template) {
+      Session.set('CSFErrors', []); // reseting the error message if preveiouse error messages were present.
+      Session.set('isUserSeated', false);
+      Session.set("currnetUserSeat", null);
+
+      if(selectedSeats.length > 0) {
+          Session.set("clickedSeats", selectedSeats);
+          $('#confirmSelectionDlg').modal('show');
+      }
+    },
+
 
 });
 
@@ -76,7 +123,7 @@ Template.UserMenu.events({
                 Session.set("currnetUserSeat", null);
             }
         });
-        if(selectedSeats.length > 0){
+        if(selectedSeats.length > 0) {
             Session.set("clickedSeats", selectedSeats);
             $('#confirmSelectionDlg').modal('show');
         }
@@ -85,7 +132,7 @@ Template.UserMenu.events({
         }
     },
     'click #confirmClearSelection': function (evt, tmp){
-        Meteor.call("clearSeats", myTakenSelectedSeats, function(error, result){
+        Meteor.call("removeGuest", myTakenSelectedSeats, function(error, result){
             if(error){
                 console.log("error", error);
             }
@@ -106,12 +153,10 @@ Template.UserMenu.events({
      initSettings: function () {
          takenSeats = getTakenSeats();
          myTakenSeats = getMyTakenSeats();
-
          if(typeof canvas !== 'undefined') {
              initContext();
          }
          update();
-         return Tables.find().count();
      },
      isTableSelected: function  () {
          return !Session.equals('selectedTable', null);
@@ -144,14 +189,23 @@ Template.PickYourSeat.rendered = function(){
         Session.set('selectedTable', selectedTable);
         if (!selectedTable) {
             selectedSeat = getClickedSeat(event.offsetX, event.offsetY);
-            if (selectedSeat) {
+
+          if (selectedSeat) {
                 var isSeatTaken = isThisSeatTaken(selectedSeat);
                 var myTakenSeat = isMyTakenSeat(selectedSeat);
                 if (!isSeatTaken) {
+                  if (Roles.userIsInRole(Meteor.user(),'super')){
+                      AdminAddSelectedSeat(selectedSeat)
+                  }
+                  else {
                     addSelectedSeat(selectedSeat);
+                  }
                 }
                 else if (myTakenSeat){
                     addSeatToMyTakenSelectedSeats(selectedSeat);
+                }
+                else if (Roles.userIsInRole(Meteor.user(),'super')) {
+                  AdminAddSeatToMyTakenSelectedSeats(selectedSeat);
                 }
             }
         }
@@ -224,13 +278,41 @@ Template.NotSoFastDlg.events({
  //HomeBigHeaderImage
  ////////////////////////////////////////////////////////////////////////////////
 Template.HomeBigHeaderImage.helpers({
-    joinThePartyBtnLbl : function(){
-        if (Meteor.user()) {
-            return "Welcome " + Meteor.user().profile.name;
-        }
-        return "Join the Party";
+    loginBntLbl: function( ){
+      if (Meteor.user()) {
+          return "LogOut ";
+      }
+      return "Join the Party";
     }
 });
+
+Template.HomeBigHeaderImage.events({
+  'click #loginBtn' : function (evt, tmp) {
+    if (Meteor.user()){
+      Meteor.logout();
+    } else {
+      $('#notSoFastDlg').modal( {
+          onApprove : function() {}
+        }).modal('show');
+    }
+  },
+  'click #langEng' : function (evt, tmp) {
+    Session.set('language', 'eng');
+  },
+  'click #langRo' : function (evt, tmp) {
+    Session.set('language', 'ro');
+  },
+  'click #langSp' : function (evt, tmp) {
+    Session.set('language', 'sp');
+  },
+  'click #langNl' : function (evt, tmp) {
+    Session.set('language', 'nl');
+  }
+});
+
+Template.HomeBigHeaderImage.rendered = function(){
+  this.$('.languagedropdown').dropdown();
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 //HomeContent
@@ -238,27 +320,5 @@ Template.HomeBigHeaderImage.helpers({
 Template.HomeContent.helpers({
     nrGuests: function(){
         return Seats.find().count();
-    }
-});
-
-////////////////////////////////////////////////////////////////////////////////
-//GuestList
-////////////////////////////////////////////////////////////////////////////////
-Template.GuestList.helpers({
-    guestsByTable: function(){
-        var guestsbytable = [];
-        var tablesList = Tables.find().fetch();
-        for (var i =0; i < tablesList.length; i++){
-            if (countGuestsAtTable(tablesList[i]._id) > 0) {
-                guestsbytable.push(Seats.find({table:tablesList[i]._id}));
-            }
-        }
-        return guestsbytable;
-    },
-    selectedTableName: function () {
-        selTable = Session.get('selectedTable');
-        if (selTable) {
-            return selTable.tableName;
-        }
     }
 });

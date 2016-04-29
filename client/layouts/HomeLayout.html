@@ -29,12 +29,9 @@
     <!-- Page Contents -->
     <div class="pusher">
         <div class="ui vertical stripe segment">
-           <div class="ui text container">
-               <h3 class="ui header">The big adventure!</h3>
-              <p>It is true that we are not going to find a wizzard, climb a mountain slay a dragon and steal it's gold, but non the less it will be one of the bigest undertakings of our
-              lives. So we will need all the help we can get from our friends and family.
-              </p>
-               <p>But what is this big adventure I am talking about? Well, it is just a big party, that we will organize for you guys. See you there!</p>
+           <div class="ui text container center aligned" >
+               <h1 class="ui header center aligned">{{BigPartyTitleText}}</h1>
+              <p>{{BigPartyMainText}}</p>
            </div>
         </div>
 
@@ -43,8 +40,10 @@
               {{#if currentUser}}
                 {{>PickYourSeat}}
               {{else}}
-                <div class="center aligned column">
-                    <a id='joinThePartyBtn' class="ui massive button green">Join the party in order to pick a seat</a>
+                <div class="ui center aligned column">
+                  <div class="ui segment">
+                    <a id='joinThePartyBtn' class="ui massive button green">Join the party</a>
+                  </div>
                 </div>
               {{/if}}
           </div>
@@ -52,7 +51,7 @@
         {{#if currentUser}}
         <div class="ui center aligned top stripe segment">
             <div class="ui text container">
-                <h1>Guest List</h1>
+                <h1>{{GuesteListTitle}}</h1>
             </div>
             {{> GuestList}}
         </div>
@@ -62,8 +61,7 @@
         <div class="ui equal width stackable externally celled grid">
           <div class="center aligned row">
             <div class="column">
-              <h3>"Party Funds"</h3>
-              <p>Help us make the party not only unforgetable for us</p>
+              <h2>{{PartyFundsText}}</h2>
               <div class="ui statistic">
                 <div class="value">
                   0
@@ -86,65 +84,64 @@
         </div>
       </div>
 
-      <div class="ui vertical stripe segment center aligned ">
-         <div class="ui text container center aligned">
-             <h3 class="ui header">Numbeer of guests attending the event</h3>
-             <div class="ui statistic aligned center">
-               <div class="value">
-                 {{nrGuests}}
+      <div class="ui quote vertical segment center aligned ">
+           <div class="column aligned center">
+
+             <div class="ui huge statistic">
+                 <div class="value">
+                   {{nrGuests}}
+                 </div>
+                 <h2 class="ui center aligned icon header">
+                   <i class="circular users icon"></i>
+                   {{ConfirmedGuests}}
+                 </h2>
                </div>
-               <div class="label">
-                 Guests
-               </div>
-             </div>
-         </div>
+           </div>
       </div>
 
-      <div class="ui vertical stripe segment center aligned ">
-         <div class="ui text container center aligned">
-             <h3 class="ui header">Party Location</h3>
-             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5682.205992839244!2d26.044856900419635!3d44.59491878558589!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40b21bb391332dd7%3A0x515102a88012a092!2sClub+Cortina!5e0!3m2!1sen!2sro!4v1459183400032" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
-         </div>
-         <a href="http://www.clubcortina.ro/" class="ui large button">More Details</a>
-      </div>
-
-
-      <div class="ui vertical stripe segment">
-        <div class="ui text container">
-          <h3 class="ui header">Breaking The Grid, Grabs Your Attention</h3>
-          <h4 class="ui horizontal header divider">
-            <a href="#">Case Studies</a>
-          </h4>
-          <h3 class="ui header">Did We Tell You About Our Bananas?</h3>
+      <div class="ui vertical stripe quote segment center aligned">
+        <div class="ui equal width stackable celled grid">
+          <div class="center aligned row">
+            <div class="column aligned center">
+              <h3> {{DateText}} </h3>
+                <img class="ui centered medium image" src="/images/calendar.png">
+            </div>
+            <div class="column">
+              <div class="ui text container centered">
+                  <h3 class="ui header">{{LocationText}}</h3>
+                  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5682.205992839244!2d26.044856900419635!3d44.59491878558589!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40b21bb391332dd7%3A0x515102a88012a092!2sClub+Cortina!5e0!3m2!1sen!2sro!4v1459183400032" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
   </div>
 </template>
 
 <template name="GuestList">
-    <div class="ui stackable five column centered grid">
+    <div class="ui stackable four column centered grid">
             {{#each guestsByTable}}
                 <div class="column">
                     <div class="ui segment">
                         <div class="ui label large teal fluid">
-                            Table {{selectedTableName}}
+                            Table {{this.name}}
                         </div>
                         <table class="ui very basic collapsing celled table">
                           <thead>
-                            <tr><th>Guest Name</th>
+                            <tr><th>Guest</th>
                             <th>Confirmed</th>
                           </tr></thead>
                         <tbody>
-                            {{#each this}}
+                            {{#each this.seats}}
                                 <tr>
                                   <td>
                                     <h4 class="ui image header">
                                       <div class="content">
-                                        {{name}}
+                                        {{this.name}}
                                        </div>
                                   </h4></td>
                                   <td>
-                                    how long ago
+                                    {{formatDate this.createdAt}}
                                   </td>
                                 </tr>
                             {{/each}}
@@ -162,20 +159,26 @@
       <div class="ui container">
         <div class="ui stackable inverted divided equal height stackable grid">
           <div class="three wide column">
-            <h4 class="ui inverted header">About</h4>
+            <h4 class="ui inverted header">Location</h4>
             <div class="ui inverted link list">
-              <a href="/" class="item">Location</a>
+              <a href="http://www.clubcortina.ro/" class="item">Club Cortina</a>
             </div>
           </div>
           <div class="three wide column">
-            <h4 class="ui inverted header">Services</h4>
+            <h4 class="ui inverted header">Contact</h4>
             <div class="ui inverted link list">
-              <a href="/" class="item">Favorite X-Men</a>
+              <a href="/" class="item">Dan  +40727058069</a>
+              <a href="/" class="item">Gabriela +40723191925</a>
+              <a href="/" class="item">dan.sava42(at)gmail.com</a>
             </div>
           </div>
           <div class="seven wide column">
-            <h4 class="ui inverted header">Footer Header</h4>
-            <p>Extra space for a call to action inside the footer that could help re-engage users.</p>
+            <h4 class="ui inverted header">Schedule</h4>
+            <div class="ui inverted link list">
+              <a href="/" class="item">18:00 - Wedding Ceremony</a>
+              <a href="/" class="item">19:45 - Welcoming Guests</a>
+              <a href="/" class="item">20:00 - Party Starts</a>
+            </div>
           </div>
         </div>
       </div>
@@ -193,18 +196,27 @@
             </a>
             <a href='/' class="active item">Home</a>
             <div class="right item">
-              <a class="ui button">{{>loginButtons}}</a>
+              <a id='loginBtn' class="ui positive button">{{loginBntLbl}}</a>
+              <div class="ui languagedropdown floating dropdown labeled icon button positive">
+                <i class="world icon"></i>
+                <span class="text"><i class="gb flag"></i> ENG </span>
+                <div class="menu">
+                  <div class="item" id='langEng'><i class="gb flag"></i> ENG </div>
+                  <div class="item" id='langRo'><i class="ro flag"></i> RO </div>
+                  <div class="item" id='langSp'><i  class="es flag"></i> SP </div>
+                  <div class="item" id='langNl'><i class="nl flag"></i> NL </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
 
         <div class="ui text container">
           <h1 class="ui inverted header">
-            Dan & Gabriela Wedding party !
+            Dan & Gabriela Wedding party
           </h1>
-          <h2>Let us know you are going to join the party by loging in and picking a seat at a table.
-              You can also invite up to four other guests to our wedding. </h2>
-          <div id='joinThePartyBtn' class="positive ui huge primary button">{{joinThePartyBtnLbl}}</div>
+          <h2> {{MainText}}</h2>
         </div>
       </div>
     </div>
@@ -241,7 +253,7 @@
     </div>
     <table class="ui very basic collapsing celled table">
       <thead>
-        <tr><th>Guest Name</th>
+        <tr><th>Guest</th>
         <th>Confirmed</th>
       </tr></thead>
     <tbody>
@@ -254,7 +266,7 @@
                    </div>
               </h4></td>
               <td>
-                how long ago
+                {{formatDate createdAt}}
               </td>
             </tr>
         {{/each}}
@@ -268,8 +280,9 @@
     <div class="ui vertical menu">
       <a id="addTable" class="item"><i class="plus icon"></i> Add Table</a>
       <a id="removeTable" class="item"><i class="minus icon"></i> Remove Table</a>
-      <a id="removeSeat" class="item"><i class="minus icon"></i> Remove person</a>
       <a id="editTableName" class="item"><i class="edit icon"></i> Table Name</a>
+      <a id="adminAddGuest" class="item"><i class="plus icon"></i> Add Guest(s)</a>
+      <a id="adminRemoveGuest" class="item"><i class="minus icon"></i> Remove Guest(s)</a>
     </div>
   </div>
 </template>
@@ -313,14 +326,13 @@
 <template name="NotSoFastDlg">
 <div class="ui one column centered grid">
   <div class="column">
-          <div class="ui center aligned basic segment">
-           <h1 class="ui header">We are sorry <i class="fa fa-frown-o"></i> </h1>
-              <p>Only our friends and family can attend the wedding reception</p>
-              <p>If you are part of our friends and family please provide the password from the invitation letter</p>
+          <div class="ui center aligned vertical stripe segment">
+           <h1 class="ui header"><i class="massive frown icon"></i></h1>
+              <p>{{SorryText}}</p>
           </div>
           <div class="ui center aligned basic segment">
               <div class="ui input fluid">
-                <input id="invitationPass" class="invitationPass" placeholder="Password from the invitation letter" type="text" value="">
+                <input id="invitationPass" class="invitationPass" placeholder="{{PasswordPlacehoderText}}" type="text" value="">
               </div>
           </div>
           <div class="ui center aligned basic segment">
