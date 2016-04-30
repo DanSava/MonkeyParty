@@ -1,0 +1,57 @@
+<template name="LoginDlg">
+    <div class="ui vertical stripe stacked segment">
+      <div class="ui text container">
+        <h3 class="ui header aligned center">Sign In with facebook</h3>
+        <button class="ui facebook button fluid">
+          <i class="facebook icon"></i>
+          Facebook
+        </button>
+        <h4 class="ui horizontal header divider"> <a href="">Or</a> </h4>
+        <h3 class="ui header aligned center">{{buttonLbl}}</h3>
+            <form id="caca" class="ui form caca">
+              <div class="ui stacked segment">
+                  {{#if signUp}}
+                    <div class="field">
+                      <div class="ui left icon input">
+                        <i class="user icon"></i>
+                        <input type="text" id="firstname" name="firstname" placeholder="First name">
+                      </div>
+                    </div>
+                    <div class="field">
+                      <div class="ui left icon input">
+                        <i class="user icon"></i>
+                        <input type="text" id="lastname" name="lastname" placeholder="Last Name">
+                      </div>
+                    </div>
+                    {{/if}}
+                    <div class="field">
+                      <div class="ui left icon input">
+                        <i class="user icon"></i>
+                        <input type="text" id="email" name="email" placeholder="E-mail address">
+                      </div>
+                    </div>
+                    <div class="field">
+                      <div class="ui left icon input">
+                        <i class="lock icon"></i>
+                        <input type="password" id="password" name="password" placeholder="Password">
+                      </div>
+                    </div>
+                    <div id="submitBtn" class="ui fluid large teal submit button">{{buttonLbl}}</div>
+              </div>
+              <div class="ui error message"></div>
+          </form>
+          {{#if loginErrosPresent}}
+          <div class="ui error message">
+              {{#each loginErros}}
+              <ol class="ui list">
+                <li value="*">{{this}}</li>
+              </ol>
+              {{/each}}
+          </div>
+          {{/if}}
+          <div class="ui message">
+              {{message}} <a id="signUpToggle" href="">{{linkLbl}}</a>
+          </div>
+      </div>
+    </div>
+</template>

@@ -1,0 +1,348 @@
+<template name="HomeLayout">
+    <head>
+        <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
+    </head>
+    <main>
+        {{>HomeHeader}}
+        {{>HomeBigHeaderImage}}
+        {{>HomeContent}}
+        {{>Footer}}
+        {{>NotSoFastModal}}
+        {{>LoginModal}}
+    </main>
+</template>
+
+<template name="HomeHeader">
+    <div class="ui large top fixed hidden menu">
+      <div class="ui container">
+        <a class="active item">Home</a>
+      </div>
+    </div>
+
+    <!-- Sidebar Menu -->
+    <div class="ui vertical inverted sidebar menu">
+      <a class="active item">Home</a>
+    </div>
+</template>
+
+<template name="HomeContent">
+    <!-- Page Contents -->
+    <div class="pusher">
+        <div class="ui vertical stripe segment">
+           <div class="ui text container center aligned" >
+               <h1 class="ui header center aligned">{{BigPartyTitleText}}</h1>
+              <p>{{BigPartyMainText}}</p>
+           </div>
+        </div>
+
+        <div class="ui grid">
+          <div class="row">
+              {{#if currentUser}}
+                {{>PickYourSeat}}
+              {{else}}
+                <div class="ui center aligned column">
+                  <div class="ui segment">
+                    <a id='joinThePartyBtn' class="ui massive button green">Join the party</a>
+                  </div>
+                </div>
+              {{/if}}
+          </div>
+        </div>
+        {{#if currentUser}}
+        <div class="ui center aligned top stripe segment">
+            <div class="ui text container">
+                <h1>{{GuesteListTitle}}</h1>
+            </div>
+            {{> GuestList}}
+        </div>
+        {{/if}}
+
+      <div class="ui vertical stripe quote segment">
+        <div class="ui equal width stackable externally celled grid">
+          <div class="center aligned row">
+            <div class="column">
+              <h2>{{PartyFundsText}}</h2>
+              <div class="ui statistic">
+                <div class="value">
+                  0
+                </div>
+                <div class="label">
+                  Party Funds
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <h3>"Payment Details should go here "</h3>
+              <button class="ui primary button">
+                  Paypal button
+              </button>
+              <p>
+                   Bank payment info
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui quote vertical segment center aligned ">
+           <div class="column aligned center">
+
+             <div class="ui huge statistic">
+                 <div class="value">
+                   {{nrGuests}}
+                 </div>
+                 <h2 class="ui center aligned icon header">
+                   <i class="circular users icon"></i>
+                   {{ConfirmedGuests}}
+                 </h2>
+               </div>
+           </div>
+      </div>
+
+      <div class="ui vertical stripe quote segment center aligned">
+        <div class="ui equal width stackable celled grid">
+          <div class="center aligned row">
+            <div class="column aligned center">
+              <h3> {{DateText}} </h3>
+                <img class="ui centered medium image" src="/images/calendar.png">
+            </div>
+            <div class="column">
+              <div class="ui text container centered">
+                  <h3 class="ui header">{{LocationText}}</h3>
+                  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5682.205992839244!2d26.044856900419635!3d44.59491878558589!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40b21bb391332dd7%3A0x515102a88012a092!2sClub+Cortina!5e0!3m2!1sen!2sro!4v1459183400032" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</template>
+
+<template name="GuestList">
+    <div class="ui stackable four column centered grid">
+            {{#each guestsByTable}}
+                <div class="column">
+                    <div class="ui segment">
+                        <div class="ui label large teal fluid">
+                            Table {{this.name}}
+                        </div>
+                        <table class="ui very basic collapsing celled table">
+                          <thead>
+                            <tr><th>Guest</th>
+                            <th>Confirmed</th>
+                          </tr></thead>
+                        <tbody>
+                            {{#each this.seats}}
+                                <tr>
+                                  <td>
+                                    <h4 class="ui image header">
+                                      <div class="content">
+                                        {{this.name}}
+                                       </div>
+                                  </h4></td>
+                                  <td>
+                                    {{formatDate this.createdAt}}
+                                  </td>
+                                </tr>
+                            {{/each}}
+                          </tbody>
+                        </table>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+</template>
+
+<template name="Footer">
+    <div class="pusher">
+    <div class="ui inverted vertical footer segment">
+      <div class="ui container">
+        <div class="ui stackable inverted divided equal height stackable grid">
+          <div class="three wide column">
+            <h4 class="ui inverted header">Location</h4>
+            <div class="ui inverted link list">
+              <a href="http://www.clubcortina.ro/" class="item">Club Cortina</a>
+            </div>
+          </div>
+          <div class="three wide column">
+            <h4 class="ui inverted header">Contact</h4>
+            <div class="ui inverted link list">
+              <a href="/" class="item">Dan  +40727058069</a>
+              <a href="/" class="item">Gabriela +40723191925</a>
+              <a href="/" class="item">dan.sava42(at)gmail.com</a>
+            </div>
+          </div>
+          <div class="seven wide column">
+            <h4 class="ui inverted header">Schedule</h4>
+            <div class="ui inverted link list">
+              <a href="/" class="item">18:00 - Wedding Ceremony</a>
+              <a href="/" class="item">19:45 - Welcoming Guests</a>
+              <a href="/" class="item">20:00 - Party Starts</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="HomeBigHeaderImage">
+    <div class="pusher">
+      <div class="ui vertical masthead center aligned segment" style="background-image:url('/images/banner.jpg');background-size: cover !important;">
+        <div class="ui container">
+          <div class="ui large secondary pointing menu">
+            <a class="toc item">
+              <i class="sidebar icon"></i>
+            </a>
+            <a href='/' class="active item">Home</a>
+            <div class="right item">
+              <a id='loginBtn' class="ui positive button">{{loginBntLbl}}</a>
+              <div class="ui languagedropdown floating dropdown labeled icon button positive">
+                <i class="world icon"></i>
+                <span class="text"><i class="gb flag"></i> ENG </span>
+                <div class="menu">
+                  <div class="item" id='langEng'><i class="gb flag"></i> ENG </div>
+                  <div class="item" id='langRo'><i class="ro flag"></i> RO </div>
+                  <div class="item" id='langSp'><i  class="es flag"></i> SP </div>
+                  <div class="item" id='langNl'><i class="nl flag"></i> NL </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="ui text container">
+          <h1 class="ui inverted header">
+            Dan & Gabriela Wedding party
+          </h1>
+          <h2> {{MainText}}</h2>
+        </div>
+      </div>
+    </div>
+</template>
+
+<template name="PickYourSeat">
+    {{#if Template.subscriptionsReady}}
+            <div class="three wide column">
+                {{#if isTableSelected}}
+                    {{>ListWithPeopleAtTable}}
+                {{/if}}
+            </div>
+            <div class="nine wide column canvas_element">
+                <canvas id="canvas" class="fluid"></canvas>
+            </div>
+            <div class="one wide column">
+                {{#if isInRole 'super'}}
+                    {{> AdminMenu}}
+                    {{> AddTableModal}}
+                {{else}}
+                    {{> UserMenu}}
+                {{/if}}
+            </div>
+            {{initSettings}}
+        {{> ConfirmSelectionModal}}
+    {{else}}
+        Loading...
+    {{/if}}
+</template>
+
+<template name="ListWithPeopleAtTable">
+    <div class="ui label large teal fluid">
+        Table {{selectedTableName}}
+    </div>
+    <table class="ui very basic collapsing celled table">
+      <thead>
+        <tr><th>Guest</th>
+        <th>Confirmed</th>
+      </tr></thead>
+    <tbody>
+        {{#each guestsSeatingAtTable}}
+            <tr>
+              <td>
+                <h4 class="ui image header">
+                  <div class="content">
+                    {{name}}
+                   </div>
+              </h4></td>
+              <td>
+                {{formatDate createdAt}}
+              </td>
+            </tr>
+        {{/each}}
+      </tbody>
+    </table>
+</template>
+
+<template name="AdminMenu">
+  <div class="ui compact basic segment ">
+      Menu Title
+    <div class="ui vertical menu">
+      <a id="addTable" class="item"><i class="plus icon"></i> Add Table</a>
+      <a id="removeTable" class="item"><i class="minus icon"></i> Remove Table</a>
+      <a id="editTableName" class="item"><i class="edit icon"></i> Table Name</a>
+      <a id="adminAddGuest" class="item"><i class="plus icon"></i> Add Guest(s)</a>
+      <a id="adminRemoveGuest" class="item"><i class="minus icon"></i> Remove Guest(s)</a>
+    </div>
+  </div>
+</template>
+
+<template name="UserMenu">
+  <div class="ui compact basic segment ">
+    <div class="ui vertical icon menu">
+      <a id="confirmSelectionBtn" class="item" data-content="Select at least one seat">
+        <i class="add user icon"></i>
+            Add Guests
+       <div class="floating ui teal label">{{remainingInvitations}}</div>
+      </a>
+      <a class="item" id="clearSelectionBtn">
+        <i class="remove user icon"></i>
+        Remove Guest
+       </a>
+        <div class="ui flowing popup bottom right transition hidden" style="top: 200px; left: 0.909088px; bottom: auto; right: auto; width: 400px;">
+          <div class="ui one column center aligned grid">
+            <div class="column">
+                {{#if takenSeatsSelected}}
+                  <h4 class="ui header">Confirm</h4>
+                  <p>You are going to remove the slelected guest(s)</p>
+                  <div class="ui button" id="confirmClearSelection">Ok</div>
+                {{else}}
+                <h4 class="ui header">No selection found</h4>
+                <p>Please select one of your confirmed seats.</p>
+                {{/if}}
+            </div>
+          </div>
+        </div>
+
+    </div>
+  </div>
+</template>
+
+<template name="NotSoFastModal">
+    <div id="notSoFastDlg" class="ui modal">
+        {{> NotSoFastDlg}}
+    </div>
+</template>
+<template name="NotSoFastDlg">
+<div class="ui one column centered grid">
+  <div class="column">
+          <div class="ui center aligned vertical stripe segment">
+           <h1 class="ui header"><i class="massive frown icon"></i></h1>
+              <p>{{SorryText}}</p>
+          </div>
+          <div class="ui center aligned basic segment">
+              <div class="ui input fluid">
+                <input id="invitationPass" class="invitationPass" placeholder="{{PasswordPlacehoderText}}" type="text" value="">
+              </div>
+          </div>
+          <div class="ui center aligned basic segment">
+              <button id="checkPassBtn" class="circular positive ui button">Ok</button>
+          </div>
+  </div>
+</div>
+</template>
+<template name="LoginModal">
+    <div id="loginModal" class="ui modal">
+        {{>LoginDlg}}
+    </div>
+</template>
