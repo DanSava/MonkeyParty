@@ -15,7 +15,7 @@ Meteor.methods({
         }
     },
     checkPassword: function (txt){
-        return txt === 'xxx';
+        return txt === 'dsgg0309';
     },
     isUserSeated: function (id){
         // need to restrict the search also on the user.profile.name
