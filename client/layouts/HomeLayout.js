@@ -127,9 +127,6 @@ Template.UserMenu.events({
             Session.set("clickedSeats", selectedSeats);
             $('#confirmSelectionDlg').modal('show');
         }
-        else{
-            alert('Please selecte a seat first');
-        }
     },
     'click #confirmClearSelection': function (evt, tmp){
         Meteor.call("removeGuest", myTakenSelectedSeats, function(error, result){
@@ -280,7 +277,7 @@ Template.NotSoFastDlg.events({
 Template.HomeBigHeaderImage.helpers({
     loginBntLbl: function( ){
       if (Meteor.user()) {
-          return "LogOut ";
+          return "Log Out ";
       }
       return "Join the Party";
     }

@@ -1,6 +1,6 @@
 Template.registerHelper("MainText", function() {
     if (Session.equals('language', 'eng')) {
-      return "Let us know you are going to join the party by loging in and picking a seat at a table. You can also invite other guests to our wedding"
+      return "Let us know you are going to join the party by logging in and picking a seat at a table. You can also invite other guests to our wedding"
     }
     else if (Session.equals('language', 'sp')) {
       return "Déjenos saber que va a unirse a la fiesta por logicas y elegir un asiento en una mesa . También puede invitar a otros invitados a nuestra boda"
@@ -12,13 +12,13 @@ Template.registerHelper("MainText", function() {
       return "Laat ons weten dat je gaat naar de partij aan te sluiten door loging in en het kiezen van een stoel aan een tafel. U kunt ook uitnodigen andere gasten op onze bruiloft"
     }
 
-    return "Let us know you are going to join the party by loging in and picking a seat at a table. You can also invite  other guests to our wedding"
+    return "Let us know you are going to join the party by logging in and picking a seat at a table. You can also invite  other guests to our wedding"
 });
 
 
 Template.registerHelper("BigPartyMainText", function() {
      if (Session.equals('language', 'eng')) {
-       return "It is true that we are not going to find a wizzard, climb a mountain slay a dragon and steal it's gold, but non the less. It will be one of the bigest undertakings of our lives. So we will need all the help we can get from our friends and family. But what is this big adventure I am talking about? Well, it is just a big party, that we will organize in your honour. See you there."
+       return "It is true that we are not going to find a wizzard, climb a mountain slay a dragon and steal its gold, but non the less. It will be one of the bigest undertakings of our lives. So we will need all the help we can get from our friends and family. But what is this big adventure I am talking about? Well, it is just a big party, that we will organize in your honour. See you there."
      }
      else if (Session.equals('language', 'sp')) {
        return "Es cierto que no vamos a encontrar un Wizzard , escalar una montaña matar a un dragón y robar es oro, pero no menos. Será una de las empresas mas grandes de nuestra vida . Así que vamos a necesitar toda la ayuda que podemos obtener de nuestros amigos y familiares. Pero, ¿qué es esta gran aventura que estoy hablando ? Bueno , es sólo una gran fiesta , que vamos a organizar en su honor. Te veo allí."
@@ -30,7 +30,7 @@ Template.registerHelper("BigPartyMainText", function() {
        return "Het is waar dat we niet gaan om een wizzard vinden , een berg beklimmen doden een draak en stelen het goud , maar niet de minder . Het zal een van de bigest ondernemingen van ons leven . Dus zullen we alle hulp die we kunnen krijgen van onze vrienden en familie nodig hebben. Maar wat is dit grote avontuur heb ik het over ? Nou , het is gewoon een groot feest , dat we zullen organiseren in je eer . Zie je daar."
      }
 
-     return "It is true that we are not going to find a wizzard, climb a mountain slay a dragon and steal it's gold, but non the less. It will be one of the bigest undertakings of our lives. So we will need all the help we can get from our friends and family. But what is this big adventure I am talking about? Well, it is just a big party, that we will organize in your honour. See you there."
+     return "It is true that we are not going to find a wizzard, climb a mountain slay a dragon and steal its gold, but non the less. It will be one of the bigest undertakings of our lives. So we will need all the help we can get from our friends and family. But what is this big adventure I am talking about? Well, it is just a big party, that we will organize in your honour. See you there."
 });
 
 Template.registerHelper("BigPartyTitleText", function() {

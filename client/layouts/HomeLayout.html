@@ -28,25 +28,30 @@
 <template name="HomeContent">
     <!-- Page Contents -->
     <div class="pusher">
+        {{#if currentUser}}
+        {{else}}
         <div class="ui vertical stripe segment">
            <div class="ui text container center aligned" >
                <h1 class="ui header center aligned">{{BigPartyTitleText}}</h1>
               <p>{{BigPartyMainText}}</p>
            </div>
         </div>
-
-        <div class="ui grid">
-          <div class="row">
-              {{#if currentUser}}
-                {{>PickYourSeat}}
-              {{else}}
-                <div class="ui center aligned column">
-                  <div class="ui segment">
-                    <a id='joinThePartyBtn' class="ui massive button green">Join the party</a>
-                  </div>
-                </div>
-              {{/if}}
+        {{/if}}
+        {{#if currentUser}}
+          <div class="ui center aligned segment selectSeat">
+            <h1> Select a Seat</h1>
           </div>
+        {{/if}}
+        <div class="ui grid centered">
+            {{#if currentUser}}
+              {{>PickYourSeat}}
+            {{else}}
+              <div class="ui column">
+                <div class="ui center aligned segment">
+                  <a id='joinThePartyBtn' class="ui massive button green">Join the party</a>
+                </div>
+              </div>
+            {{/if}}
         </div>
         {{#if currentUser}}
         <div class="ui center aligned top stripe segment">
@@ -61,7 +66,7 @@
         <div class="ui equal width stackable externally celled grid">
           <div class="center aligned row">
             <div class="column">
-              <h2>{{PartyFundsText}}</h2>
+              <h3>{{PartyFundsText}}</h3>
               <div class="ui statistic">
                 <div class="value">
                   0
@@ -119,38 +124,38 @@
 </template>
 
 <template name="GuestList">
-    <div class="ui stackable four column centered grid">
-            {{#each guestsByTable}}
-                <div class="column">
-                    <div class="ui segment">
-                        <div class="ui label large teal fluid">
-                            Table {{this.name}}
+      <div class="ui stackable four column centered grid">
+              {{#each guestsByTable}}
+                  <div class="column">
+                          <div class="ui label large green fluid">
+                              <i class="large film icon"></i> Table {{this.name}}
+                              <table class="ui striped table center aligned">
+                                <thead>
+                                  <tr>
+                                    <th>Guest</th>
+                                    <th>Confirmed</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {{#each this.seats}}
+                                      <tr>
+                                        <td>
+                                          <h4 class="ui image header">
+                                            <div class="content">
+                                              {{this.name}}
+                                             </div>
+                                        </h4></td>
+                                        <td>
+                                          {{formatDate this.createdAt}}
+                                        </td>
+                                      </tr>
+                                  {{/each}}
+                                </tbody>
+                              </table>
                         </div>
-                        <table class="ui very basic collapsing celled table">
-                          <thead>
-                            <tr><th>Guest</th>
-                            <th>Confirmed</th>
-                          </tr></thead>
-                        <tbody>
-                            {{#each this.seats}}
-                                <tr>
-                                  <td>
-                                    <h4 class="ui image header">
-                                      <div class="content">
-                                        {{this.name}}
-                                       </div>
-                                  </h4></td>
-                                  <td>
-                                    {{formatDate this.createdAt}}
-                                  </td>
-                                </tr>
-                            {{/each}}
-                          </tbody>
-                        </table>
-                    </div>
-                </div>
-            {{/each}}
-        </div>
+                  </div>
+              {{/each}}
+          </div>
 </template>
 
 <template name="Footer">
@@ -187,7 +192,6 @@
 </template>
 
 <template name="HomeBigHeaderImage">
-    <div class="pusher">
       <div class="ui vertical masthead center aligned segment" style="background-image:url('/images/banner.jpg');background-size: cover !important;">
         <div class="ui container">
           <div class="ui large secondary pointing menu">
@@ -214,12 +218,11 @@
 
         <div class="ui text container">
           <h1 class="ui inverted header">
-            Dan & Gabriela Wedding party
+            Dan & Gabriela <br> Wedding Party
           </h1>
           <h2> {{MainText}}</h2>
         </div>
       </div>
-    </div>
 </template>
 
 <template name="PickYourSeat">
@@ -248,30 +251,30 @@
 </template>
 
 <template name="ListWithPeopleAtTable">
-    <div class="ui label large teal fluid">
-        Table {{selectedTableName}}
+    <div class="ui label large green fluid center aligned">
+       <i class="large film icon"></i> Table {{selectedTableName}}
+      <table class="ui striped table center aligned">
+        <thead>
+          <tr><th>Guest</th>
+          <th>Confirmed</th>
+        </tr></thead>
+         <tbody>
+          {{#each guestsSeatingAtTable}}
+              <tr>
+                <td>
+                  <h4 class="ui image header">
+                    <div class="content">
+                      {{name}}
+                     </div>
+                </h4></td>
+                <td>
+                  {{formatDate createdAt}}
+                </td>
+              </tr>
+          {{/each}}
+        </tbody>
+      </table>
     </div>
-    <table class="ui very basic collapsing celled table">
-      <thead>
-        <tr><th>Guest</th>
-        <th>Confirmed</th>
-      </tr></thead>
-    <tbody>
-        {{#each guestsSeatingAtTable}}
-            <tr>
-              <td>
-                <h4 class="ui image header">
-                  <div class="content">
-                    {{name}}
-                   </div>
-              </h4></td>
-              <td>
-                {{formatDate createdAt}}
-              </td>
-            </tr>
-        {{/each}}
-      </tbody>
-    </table>
 </template>
 
 <template name="AdminMenu">
@@ -292,12 +295,12 @@
     <div class="ui vertical icon menu">
       <a id="confirmSelectionBtn" class="item" data-content="Select at least one seat">
         <i class="add user icon"></i>
-            Add Guests
-       <div class="floating ui teal label">{{remainingInvitations}}</div>
+            Confirm Selected Seats
+       <div class="floating ui green label">{{remainingInvitations}}</div>
       </a>
       <a class="item" id="clearSelectionBtn">
         <i class="remove user icon"></i>
-        Remove Guest
+        Cancel Selected Seats
        </a>
         <div class="ui flowing popup bottom right transition hidden" style="top: 200px; left: 0.909088px; bottom: auto; right: auto; width: 400px;">
           <div class="ui one column center aligned grid">
@@ -326,17 +329,16 @@
 <template name="NotSoFastDlg">
 <div class="ui one column centered grid">
   <div class="column">
-          <div class="ui center aligned vertical stripe segment">
+          <div class="ui center aligned basic segment sorry">
            <h1 class="ui header"><i class="massive frown icon"></i></h1>
               <p>{{SorryText}}</p>
           </div>
-          <div class="ui center aligned basic segment">
+          <div class="ui center aligned segment">
               <div class="ui input fluid">
                 <input id="invitationPass" class="invitationPass" placeholder="{{PasswordPlacehoderText}}" type="text" value="">
               </div>
-          </div>
-          <div class="ui center aligned basic segment">
-              <button id="checkPassBtn" class="circular positive ui button">Ok</button>
+              <br>
+              <button id="checkPassBtn" class="circular positive ui button fluid ">Ok</button>
           </div>
   </div>
 </div>
