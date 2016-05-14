@@ -48,8 +48,8 @@ Template.GuestList.helpers({
 Template.AdminMenu.events({
     "click #addTable": function(event, template){
         var table = {
-            'name':"xx",
-            'desc': "xxx",
+            'name':"Table Name",
+            'desc': "Table Description",
             'nrSeats': 10
         };
         Meteor.call("addTable", table);
@@ -150,10 +150,11 @@ Template.UserMenu.events({
      initSettings: function () {
          takenSeats = getTakenSeats();
          myTakenSeats = getMyTakenSeats();
+         Session.set('tableList',getAllTables());
          if(typeof canvas !== 'undefined') {
-             initContext();
+             initContext(Session.get('tableList'));
          }
-         update();
+         updateCanvas();
      },
      isTableSelected: function  () {
          return !Session.equals('selectedTable', null);
@@ -178,8 +179,8 @@ Template.PickYourSeat.rendered = function(){
     });
 
     width = $('.canvas_element').width() - 20;
-    height = 0.6 * width;
-    initContext();
+    height = 0.4 * width;
+    initContext(getAllTables());
     canvas.addEventListener("mousedown", function(event) {
         var selectedSeat = null;
         var selectedTable = getClickedTable(event.offsetX, event.offsetY);
@@ -192,7 +193,7 @@ Template.PickYourSeat.rendered = function(){
                 var myTakenSeat = isMyTakenSeat(selectedSeat);
                 if (!isSeatTaken) {
                   if (Roles.userIsInRole(Meteor.user(),'super')){
-                      AdminAddSelectedSeat(selectedSeat)
+                      AdminAddSelectedSeat(selectedSeat);
                   }
                   else {
                     addSelectedSeat(selectedSeat);
@@ -219,8 +220,8 @@ Template.PickYourSeat.rendered = function(){
 
     window.addEventListener('resize', function(event, tmp) {
         width = $('.canvas_element').width() - 20;
-        height = 0.6 * width;
-        initContext();
+        height = 0.4 * width;
+        initContext(getAllTables());
         // console.log(' resize detected!', window.innerWidth, window.innerHeight);
     });
  };

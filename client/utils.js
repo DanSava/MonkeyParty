@@ -351,13 +351,12 @@ particle = {
      };
 
 tableUtils = {
-setupTables: function(NoTablesPerRow, width, height){
+setupTables: function(NoTablesPerRow, width, height, tableList){
    var tables = [];
    var tableRadius = height * 2 / 28,
     // Will need to be by user id later when commercial product is developed.
-       tableCol = Tables.find().fetch(),
-       noTables = tableCol.length,
-       no_table_rows = Math.ceil(tableCol.length /NoTablesPerRow),
+       noTables = tableList.length,
+       no_table_rows = Math.ceil(tableList.length /NoTablesPerRow),
        prevHight = height / (no_table_rows * 2),
        prevWidth = width / (NoTablesPerRow * 2);
        // Init the tables
@@ -365,7 +364,7 @@ setupTables: function(NoTablesPerRow, width, height){
            for (j = 0; j < NoTablesPerRow; j++) {
                if (i * NoTablesPerRow + j + 1 <= noTables) {
                    var idx = i * NoTablesPerRow  + j;
-                   tables.push(table.create(prevWidth, prevHight, tableRadius, tableCol[idx].nrSeats, tableCol[idx]._id, tableCol[idx].name));
+                   tables.push(table.create(prevWidth, prevHight, tableRadius, tableList[idx].nrSeats, tableList[idx]._id, tableList[idx].name));
                }
                prevWidth += width * (1/NoTablesPerRow);
            }

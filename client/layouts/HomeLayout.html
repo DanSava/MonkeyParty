@@ -5,7 +5,9 @@
     <main>
         {{>HomeHeader}}
         {{>HomeBigHeaderImage}}
-        {{>HomeContent}}
+        <div class="ui container-fluid">
+            {{>HomeContent}}
+        </div>
         {{>Footer}}
         {{>NotSoFastModal}}
         {{>LoginModal}}
@@ -26,8 +28,6 @@
 </template>
 
 <template name="HomeContent">
-    <!-- Page Contents -->
-    <div class="pusher">
         {{#if currentUser}}
         {{else}}
         <div class="ui vertical stripe segment">
@@ -41,103 +41,58 @@
           <div class="ui center aligned segment selectSeat">
             <h1> Select a Seat</h1>
           </div>
-        {{/if}}
-        <div class="ui grid centered">
-            {{#if currentUser}}
-              {{>PickYourSeat}}
-            {{else}}
-              <div class="ui column">
-                <div class="ui center aligned segment">
-                  <a id='joinThePartyBtn' class="ui massive button green">Join the party</a>
-                </div>
-              </div>
-            {{/if}}
-        </div>
-        {{#if currentUser}}
-        <div class="ui center aligned top stripe segment">
-            <div class="ui text container">
-                <h1>{{GuesteListTitle}}</h1>
+          {{>PickYourSeat}}
+          <div class="ui center aligned segment selectSeat">
+              <h1>{{GuesteListTitle}}</h1>
+              {{> GuestList}}
+          </div>
+        {{else}}
+          <div class="ui column">
+            <div class="ui center aligned segment">
+              <a id='joinThePartyBtn' class="ui massive button green">Join the party</a>
             </div>
-            {{> GuestList}}
-        </div>
+          </div>
         {{/if}}
 
-      <div class="ui vertical stripe quote segment">
-        <div class="ui equal width stackable externally celled grid">
-          <div class="center aligned row">
-            <div class="column">
-              <h3>{{PartyFundsText}}</h3>
-              <div class="ui statistic">
-                <div class="value">
-                  0
-                </div>
-                <div class="label">
-                  Party Funds
-                </div>
-              </div>
-            </div>
-            <div class="column">
-              <h3>Bank Transfer </h3>
-              <div class="ui list align left">
-                <a class="item">
-                  <div class="ui horizontal label">IBAN</div>
-                  RO34INGB0000999901163329
-                </a>
-                <a class="item">
-                  <div class="ui horizontal label">SWIFT</div>
-                  INGBROBU
-                </a>
-                <a class="item">
-                  <div class="ui horizontal label">BIC</div>
-                  606410008
-                </a>
-              </div>
-              <h3>"Donate"</h3>
-              <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+      <div class="ui segment center aligned selectSeat">
+         <h1>{{PartyFundsText}}</h1>
+          <h3>Bank Transfer </h3>
+          <div class="ui list align left">
+            <a class="item">
+              <div class="ui horizontal label">IBAN</div>
+              RO34INGB0000999901163329
+            </a>
+            <a class="item">
+              <div class="ui horizontal label">SWIFT</div>
+              INGBROBU
+            </a>
+            <a class="item">
+              <div class="ui horizontal label">BIC</div>
+              606410008
+            </a>
+          </div>
+          <h3>Donate</h3>
+          <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
               <input type="hidden" name="cmd" value="_s-xclick">
               <input type="hidden" name="hosted_button_id" value="SFMTUEK82Y6UC">
               <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
               <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-              </form>
-
-
-            </div>
-          </div>
-        </div>
+          </form>
       </div>
 
-      <div class="ui quote vertical segment center aligned ">
-           <div class="column aligned center">
-
-             <div class="ui huge statistic">
-                 <div class="value">
-                   {{nrGuests}}
-                 </div>
-                 <h2 class="ui center aligned icon header">
-                   <i class="circular users icon"></i>
-                   {{ConfirmedGuests}}
-                 </h2>
-               </div>
-           </div>
+      <div class="ui segment center aligned selectSeat">
+        <h1>{{ConfirmedGuests}}</h1>
+         <div class="ui huge statistic">
+             <div class="value">
+               {{nrGuests}}
+             </div>
+             <h4 class="ui center aligned icon header"> <i class="circular users icon"></i> </h4>
+         </div>
       </div>
-
-      <div class="ui vertical stripe quote segment center aligned">
-        <div class="ui equal width stackable celled grid">
-          <div class="center aligned row">
-            <div class="column aligned center">
-              <h3> {{DateText}} </h3>
-                <img class="ui centered medium image" src="/images/calendar.png">
-            </div>
-            <div class="column">
-              <div class="ui text container centered">
-                  <h3 class="ui header">{{LocationText}}</h3>
-                  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5682.205992839244!2d26.044856900419635!3d44.59491878558589!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40b21bb391332dd7%3A0x515102a88012a092!2sClub+Cortina!5e0!3m2!1sen!2sro!4v1459183400032" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="ui segment center aligned selectSeat">
+          <h1>{{LocationText}}</h1>
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5682.205992839244!2d26.044856900419635!3d44.59491878558589!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40b21bb391332dd7%3A0x515102a88012a092!2sClub+Cortina!5e0!3m2!1sen!2sro!4v1459183400032" width="600" height="450" frameborder="0" style="border:0"></iframe>
       </div>
-  </div>
 </template>
 
 <template name="GuestList">
@@ -235,7 +190,7 @@
 
         <div class="ui text container">
           <h1 class="ui inverted header">
-            Dan & Gabriela <br> Wedding Party
+            Dan & Gabriela <br> Wedding Party <br> 03.09.2016
           </h1>
           <h2> {{MainText}}</h2>
         </div>
@@ -243,6 +198,26 @@
 </template>
 
 <template name="PickYourSeat">
+    {{#if Template.subscriptionsReady}}
+        <div class="ui center aligned segment selectSeat canvas_element">
+            <canvas id="canvas" class="fluid"></canvas>
+        </div>
+        <div class="ui center aligned segment selectSeat">
+            {{#if isInRole 'super'}}
+                {{> AdminMenu}}
+                {{> AddTableModal}}
+            {{else}}
+            {{> UserMenu}}
+            {{/if}}
+        </div>
+        {{initSettings}}
+        {{> ConfirmSelectionModal}}
+    {{else}}
+        Loading...
+    {{/if}}
+</template>
+
+<template name="PickYourSeatOld">
     {{#if Template.subscriptionsReady}}
             <div class="three wide column">
                 {{#if isTableSelected}}
@@ -308,8 +283,8 @@
 </template>
 
 <template name="UserMenu">
-  <div class="ui compact basic segment ">
-    <div class="ui vertical icon menu">
+    <h3>Options</h3>
+    <div class="ui compact menu">
       <a id="confirmSelectionBtn" class="item" data-content="Select at least one seat">
         <i class="add user icon"></i>
             Confirm Selected Seats
@@ -333,9 +308,7 @@
             </div>
           </div>
         </div>
-
     </div>
-  </div>
 </template>
 
 <template name="NotSoFastModal">

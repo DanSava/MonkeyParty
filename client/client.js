@@ -95,7 +95,7 @@ if(Meteor.isClient){
         return myTakenSelectedSeats.length;
     };
 
-    initContext = function() { //var doesn't work here
+    initContext = function(tableList) { //var doesn't work here
       canvas = document.getElementById("canvas");
       if (canvas){
           context = canvas.getContext('2d');
@@ -103,17 +103,16 @@ if(Meteor.isClient){
           canvas.height = height;
       }
       // Start the setup of the table
-      tables = [];
       var noTablesPerRow = 4;
-      tables = tableUtils.setupTables(noTablesPerRow, width, height);
+      tables = tableUtils.setupTables(noTablesPerRow, width, height, tableList);
     };
 
-    update = function() {
+    updateCanvas = function() {
         if (typeof context !== 'undefined' && typeof width !== 'undefined' && typeof height !== 'undefined'){
             context.clearRect(0, 0, width, height);
             utils.drawTables(tables, context);
         }
-        requestAnimationFrame(update);
+        requestAnimationFrame(updateCanvas);
     };
 
     getClickedTable = function (x, y) {
@@ -195,5 +194,8 @@ if(Meteor.isClient){
   };
   isSuperUser = function(){
     return Roles.userIsInRole(Meteor.user(),'super');
+  };
+  getAllTables = function () {
+      return Tables.find().fetch();
   };
 }
