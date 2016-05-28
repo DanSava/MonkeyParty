@@ -1,36 +1,16 @@
 ////////////////////////////////////////////////////////////////////////////////
-//ListWithPeopleAtTable
-////////////////////////////////////////////////////////////////////////////////
-Template.ListWithPeopleAtTable.helpers({
-    guestsSeatingAtTable: function (){
-        if(!Session.equals('selectedTable', null)){
-            selectedTableId = Session.get('selectedTable').tableId;
-            return guestsAtTable(selectedTableId);
-        }
-    },
-    selectedTableName: function () {
-        selTable = Session.get('selectedTable');
-        if (selTable) {
-            return Tables.findOne({_id:selTable.tableId}).name;
-        }
-    },
-    formatDate:  function (date) {
-      return moment(date).fromNow();
-    }
-});
-
-////////////////////////////////////////////////////////////////////////////////
 //GuestList
 ////////////////////////////////////////////////////////////////////////////////
 Template.GuestList.helpers({
     guestsByTable: function() {
         var guestsbytable = [];
-        var tablesList = Tables.find().fetch();
+        var tablesList = getAllTables();
         for (var i =0; i < tablesList.length; i++) {
             if (countGuestsAtTable(tablesList[i]._id) > 0) {
                 var table = {
                     'name': tablesList[i].name,
                     'seats': guestsAtTable(tablesList[i]._id),
+                    'id': tablesList[i]._id
                 };
                 guestsbytable.push(table);
             }
@@ -39,6 +19,14 @@ Template.GuestList.helpers({
     },
     formatDate:  function (date) {
       return moment(date).fromNow();
+    },
+    isTableSelected: function(id) {
+        if(!Session.equals('selectedTable', null)){
+            if (id === Session.get('selectedTable').tableId){
+                return "blue";
+            }
+        }
+        return "green";
     }
 });
 

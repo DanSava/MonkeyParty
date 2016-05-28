@@ -30,9 +30,9 @@
 <template name="HomeContent">
         {{#if currentUser}}
         {{else}}
-        <div class="ui vertical stripe segment">
+        <div class="ui center aligned segment adventure">
+            <h1 class="ui header center aligned">{{BigPartyTitleText}}</h1>
            <div class="ui text container center aligned" >
-               <h1 class="ui header center aligned">{{BigPartyTitleText}}</h1>
               <p>{{BigPartyMainText}}</p>
            </div>
         </div>
@@ -47,11 +47,9 @@
               {{> GuestList}}
           </div>
         {{else}}
-          <div class="ui column">
-            <div class="ui center aligned segment">
+            <div class="ui center aligned segment selectSeat">
               <a id='joinThePartyBtn' class="ui massive button green">Join the party</a>
             </div>
-          </div>
         {{/if}}
 
       <div class="ui segment center aligned selectSeat">
@@ -99,7 +97,7 @@
       <div class="ui stackable four column centered grid">
               {{#each guestsByTable}}
                   <div class="column">
-                          <div class="ui label large green fluid">
+                          <div class="ui label large {{isTableSelected this.id}} fluid">
                               <i class="large film icon"></i> Table {{this.name}}
                               <table class="ui striped table center aligned">
                                 <thead>
@@ -217,57 +215,6 @@
     {{/if}}
 </template>
 
-<template name="PickYourSeatOld">
-    {{#if Template.subscriptionsReady}}
-            <div class="three wide column">
-                {{#if isTableSelected}}
-                    {{>ListWithPeopleAtTable}}
-                {{/if}}
-            </div>
-            <div class="nine wide column canvas_element">
-                <canvas id="canvas" class="fluid"></canvas>
-            </div>
-            <div class="one wide column">
-                {{#if isInRole 'super'}}
-                    {{> AdminMenu}}
-                    {{> AddTableModal}}
-                {{else}}
-                    {{> UserMenu}}
-                {{/if}}
-            </div>
-            {{initSettings}}
-        {{> ConfirmSelectionModal}}
-    {{else}}
-        Loading...
-    {{/if}}
-</template>
-
-<template name="ListWithPeopleAtTable">
-    <div class="ui label large green fluid center aligned">
-       <i class="large film icon"></i> Table {{selectedTableName}}
-      <table class="ui striped table center aligned">
-        <thead>
-          <tr><th>Guest</th>
-          <th>Confirmed</th>
-        </tr></thead>
-         <tbody>
-          {{#each guestsSeatingAtTable}}
-              <tr>
-                <td>
-                  <h4 class="ui image header">
-                    <div class="content">
-                      {{name}}
-                     </div>
-                </h4></td>
-                <td>
-                  {{formatDate createdAt}}
-                </td>
-              </tr>
-          {{/each}}
-        </tbody>
-      </table>
-    </div>
-</template>
 
 <template name="AdminMenu">
   <div class="ui compact basic segment ">
@@ -316,12 +263,26 @@
         {{> NotSoFastDlg}}
     </div>
 </template>
+
 <template name="NotSoFastDlg">
 <div class="ui one column centered grid">
   <div class="column">
           <div class="ui center aligned basic segment sorry">
-           <h1 class="ui header"><i class="massive frown icon"></i></h1>
-              <p>{{SorryText}}</p>
+              <h2>{{SorryText.one}}</h2>
+               <h2 >
+                   <i class="male icon"></i>
+                   <i class="diamond icon"></i>
+                   <i class="female icon"></i>
+                   <i class="arrow right icon"></i>
+                   <i class="users icon"></i>
+                   <i class="cocktail icon"></i>
+                   <i class="birthday icon"></i>
+                   <i class="gift icon"></i>
+                   <i class="plane icon"></i>
+                   <i class="world icon"></i>
+               </h2>
+           <p>{{SorryText.two}}</p>
+           <p>{{SorryText.three}}</p>
           </div>
           <div class="ui center aligned segment">
               <div class="ui input fluid">

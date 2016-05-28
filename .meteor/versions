@@ -1,4 +1,6 @@
 accounts-base@1.2.7
+accounts-facebook@1.0.9
+accounts-oauth@1.1.12
 accounts-password@1.1.8
 accounts-ui@1.1.9
 accounts-ui-unstyled@1.1.12
@@ -38,6 +40,7 @@ ejson@1.0.11
 email@1.0.12
 erasaur:meteor-lodash@4.0.0
 es5-shim@4.5.10
+facebook@1.2.6
 fastclick@1.0.11
 flemay:less-autoprefixer@1.2.0
 fortawesome:fontawesome@4.5.0
@@ -92,6 +95,8 @@ msavin:jetsetter@1.5.2
 msavin:mongol@1.6.2
 npm-bcrypt@0.8.5
 npm-mongo@1.4.43
+oauth@1.1.10
+oauth2@1.1.9
 observe-sequence@1.0.11
 ordered-dict@1.0.7
 promise@0.6.7

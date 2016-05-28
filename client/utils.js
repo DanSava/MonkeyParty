@@ -1,4 +1,7 @@
 if (Meteor.isClient) {
+mouseOverSeatKey = "";
+mouseOverSeatGuest = "";
+
 utils = {
   distance: function(p0, p1) {
     var dx = p1.x - p0.x,
@@ -61,14 +64,14 @@ utils = {
       utils.drawParticle(el, context);
     });
   },
-  drawSeat: function(seat, tableId, seatIdx, context){
-      context.save();
-      context.beginPath();
+  drawSeat: function(seat, tableId, seatIdx, context) {
       var isSeatSelected = false;
       var isThisSeatTakeByMeAndSelected = false;
 
-      var isSeatTaken = (tableId + '_' + seatIdx in takenSeats);
-      var myTakenSeat = (tableId + '_' + seatIdx in myTakenSeats);
+      var seatKey = tableId + '_' + seatIdx;
+      var isSeatTaken = (seatKey in takenSeats);
+      var myTakenSeat = (seatKey in myTakenSeats);
+
 
       for(var j=0; j<myTakenSelectedSeats.length; j++) {
           if (myTakenSelectedSeats[j].seat === seatIdx && myTakenSelectedSeats[j].tableId === tableId) {
@@ -80,6 +83,10 @@ utils = {
                 isSeatSelected = true;
           }
       }
+
+      context.save();
+      context.beginPath();
+      context.font = 'bold 20px Verdana';
 
       if (seat.mouseOver && !isSeatSelected && !isSeatTaken){
           context.shadowColor = '#999';
@@ -115,8 +122,18 @@ utils = {
           context.fillStyle = '#269900';
           context.fill();
       }
+      if (seat.mouseOver) {
+          if (seatKey !== mouseOverSeatKey){
+              mouseOverSeatKey = seatKey;
+              mouseOverSeatGuest = Seats.findOne({"seatKey":seatKey});
+              if(mouseOverSeatGuest !== undefined) {
+                  context.fillText("Big smile!", 10, 90);
+                  //context.fillText(mouseOverSeatGuest.name, seat.particle.x + 20, seat.particle.y);
+                  console.log(mouseOverSeatGuest.name);
+              }
+          }
+      }
       context.restore();
-
   },
   drawSeats:function(seats, tableId, context) {
       seats.forEach(function(el, index, array) {
@@ -129,19 +146,21 @@ utils = {
       // draw the big table
       context.beginPath();
       context.arc(part.x, part.y, part.radius , 0, Math.PI * 2, false);
-      context.font = 'bold 20pt Calibri';
+      context.font = 'bold 20px Verdana';
 
+      var selectedTable = Session.get("selectedTable");
       if (table.mouseOver) {
+          var seatDiameter = 2 * table.seats[0].particle.radius;
+          context.fillText(table.name, part.x + part.radius + seatDiameter, part.y - 2 * seatDiameter);
           context.lineWidth = 5;
           context.stroke() ;
         }
-        var selectedTable = Session.get("selectedTable");
         var isTableSelected = selectedTable && selectedTable.tableId === table.id;
         if (isTableSelected){
             context.lineWidth = 5;
             context.stroke() ;
         }
-        else{
+        else {
             context.lineWidth = 3;
             context.stroke() ;
         }
@@ -351,25 +370,25 @@ particle = {
      };
 
 tableUtils = {
-setupTables: function(NoTablesPerRow, width, height, tableList){
+setupTables: function(noTablesPerRow, width, height, tableList){
    var tables = [];
    var tableRadius = height * 2 / 28,
     // Will need to be by user id later when commercial product is developed.
        noTables = tableList.length,
-       no_table_rows = Math.ceil(tableList.length /NoTablesPerRow),
-       prevHight = height / (no_table_rows * 2),
-       prevWidth = width / (NoTablesPerRow * 2);
+       noTableRows = Math.ceil(tableList.length /noTablesPerRow),
+       prevHight = height / (noTableRows * 2),
+       prevWidth = width / (noTablesPerRow * 2);
        // Init the tables
-       for (i = 0; i < no_table_rows; i++) {
-           for (j = 0; j < NoTablesPerRow; j++) {
-               if (i * NoTablesPerRow + j + 1 <= noTables) {
-                   var idx = i * NoTablesPerRow  + j;
+       for (i = 0; i < noTableRows; i++) {
+           for (j = 0; j < noTablesPerRow; j++) {
+               if (i * noTablesPerRow + j + 1 <= noTables) {
+                   var idx = i * noTablesPerRow  + j;
                    tables.push(table.create(prevWidth, prevHight, tableRadius, tableList[idx].nrSeats, tableList[idx]._id, tableList[idx].name));
                }
-               prevWidth += width * (1/NoTablesPerRow);
+               prevWidth += width * (1/noTablesPerRow);
            }
-           prevHight += height / no_table_rows;
-           prevWidth = width/(NoTablesPerRow * 2);
+           prevHight += height / noTableRows;
+           prevWidth = width/(noTablesPerRow * 2);
        }
    return tables;
 }

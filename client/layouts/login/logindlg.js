@@ -44,6 +44,18 @@ function validateUserData(userData) {
     return loginFormErrors.length === 0 ;
 }
 Template.LoginDlg.events({
+    "click #facebookBtn": function(event, template){
+        clearErros();
+        Meteor.loginWithFacebook({}, function(err){
+            if (err) {
+                loginFormErrors.push('Facebook login failed');
+                Session.set("loginErros", loginFormErrors);
+            }
+            else {
+                 $('#loginModal').modal('hide');
+            }
+        });
+      },
     "click #signUpToggle": function(event, template){
         var current  = Session.get("signUp");
         Session.set("signUp", !current);

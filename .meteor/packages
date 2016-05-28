@@ -36,3 +36,5 @@ alanning:roles
 momentjs:moment
 standard-minifier-css
 standard-minifier-js
+accounts-facebook
+service-configuration
