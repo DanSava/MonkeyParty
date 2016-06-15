@@ -7,23 +7,23 @@
 <template name="ConfirmSelectionDialog">
     <div class="ui vertical stacked segment">
         <div class="ui text container">
-            <h3 class="ui header aligned center">Please confirm the seat selection!</h3>
+            <h3 class="ui header aligned center">{{ConfirmSelectionTxt}}</h3>
             <div class="ui stacked segment">
                 <div class="ui fluid form">
                     {{#if isCurrentUserSeatingVisible}}
                     <div class="field">
                         <div class="ui blue huge label fluid">
-                          Hi {{currentUserName}}, you will be seated at table {{currentUserTable}} seat {{currentUserSeat}}.
+                          {{HiCurrenUserTxt.one}} {{currentUserName}}, {{HiCurrenUserTxt.two}} {{currentUserTable}}.
                         </div>
                     </div>
                     {{/if}}
                     {{#each seats}}
                         <div class="field">
                             <div class="ui label fluid">
-                                Add name for guest siting at table nr {{this.tableName}}, seat nr {{this.seat}}
+                                {{GuestNames}} {{this.tableName}}
                             </div>
                             <div class="ui fluid input">
-                              <input id="{{this.key}}" placeholder="First Name & Last Name" type="text" value="">
+                              <input id="{{this.key}}" placeholder="{{FirstLastName}}" type="text" value="">
                             </div>
                         </div>
                     {{/each}}

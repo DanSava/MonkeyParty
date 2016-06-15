@@ -150,12 +150,6 @@ Template.UserMenu.events({
  });
 
 Template.PickYourSeat.rendered = function(){
-    this.$('#confirmSelectionBtn').popup({
-        position : 'top left',
-        delay: {
-          show: 800,
-        }
-    });
     this.$('#clearSelectionBtn').popup({
         position : 'bottom right',
         inline   : true,

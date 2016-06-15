@@ -3,7 +3,6 @@
         <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
     </head>
     <main>
-        {{>HomeHeader}}
         {{>HomeBigHeaderImage}}
         <div class="ui container-fluid">
             {{>HomeContent}}
@@ -12,19 +11,6 @@
         {{>NotSoFastModal}}
         {{>LoginModal}}
     </main>
-</template>
-
-<template name="HomeHeader">
-    <div class="ui large top fixed hidden menu">
-      <div class="ui container">
-        <a class="active item">Home</a>
-      </div>
-    </div>
-
-    <!-- Sidebar Menu -->
-    <div class="ui vertical inverted sidebar menu">
-      <a class="active item">Home</a>
-    </div>
 </template>
 
 <template name="HomeContent">
@@ -38,9 +24,6 @@
         </div>
         {{/if}}
         {{#if currentUser}}
-          <div class="ui center aligned segment selectSeat">
-            <h1> Select a Seat</h1>
-          </div>
           {{>PickYourSeat}}
           <div class="ui center aligned segment selectSeat">
               <h1>{{GuesteListTitle}}</h1>
@@ -59,6 +42,10 @@
             <a class="item">
               <div class="ui horizontal label">IBAN</div>
               RO34INGB0000999901163329
+            </a>
+            <a class="item">
+              <div class="ui horizontal label">NAME</div>
+              Gabriela Georgescu
             </a>
             <a class="item">
               <div class="ui horizontal label">SWIFT</div>
@@ -142,17 +129,20 @@
           <div class="three wide column">
             <h4 class="ui inverted header">Contact</h4>
             <div class="ui inverted link list">
-              <a href="/" class="item">Dan  +40727058069</a>
-              <a href="/" class="item">Gabriela +40723191925</a>
-              <a href="/" class="item">dan.sava42(at)gmail.com</a>
+              <a href="#" class="item">Telefone:</a>
+              <a href="#" class="item">Dan  +40727058069</a>
+              <a href="#" class="item">Gabriela +40723191925</a>
+              <a href="#" class="item">Email:</a>
+              <a href="#" class="item">dan.sava42(at)gmail.com</a>
+              <a href="#" class="item">gabriela.georgescu(at)gmail.com</a>
             </div>
           </div>
           <div class="seven wide column">
             <h4 class="ui inverted header">Schedule</h4>
             <div class="ui inverted link list">
-              <a href="/" class="item">18:00 - Wedding Ceremony</a>
-              <a href="/" class="item">19:45 - Welcoming Guests</a>
-              <a href="/" class="item">20:00 - Party Starts</a>
+              <a href="#" class="item">18:00 - Wedding Ceremony</a>
+              <a href="#" class="item">19:45 - Welcoming Guests</a>
+              <a href="#" class="item">20:00 - Party Starts</a>
             </div>
           </div>
         </div>
@@ -165,12 +155,10 @@
       <div class="ui vertical masthead center aligned segment" style="background-image:url('/images/banner.jpg');background-size: cover !important;">
         <div class="ui container">
           <div class="ui large secondary pointing menu">
-            <a class="toc item">
-              <i class="sidebar icon"></i>
-            </a>
-            <a href='/' class="active item">Home</a>
+            <div class="left item">
+                <a id='loginBtn' class="ui positive button">{{loginBntLbl}}</a>
+            </div>
             <div class="right item">
-              <a id='loginBtn' class="ui positive button">{{loginBntLbl}}</a>
               <div class="ui languagedropdown floating dropdown labeled icon button positive">
                 <i class="world icon"></i>
                 <span class="text"><i class="gb flag"></i> ENG </span>
@@ -197,9 +185,6 @@
 
 <template name="PickYourSeat">
     {{#if Template.subscriptionsReady}}
-        <div class="ui center aligned segment selectSeat canvas_element">
-            <canvas id="canvas" class="fluid"></canvas>
-        </div>
         <div class="ui center aligned segment selectSeat">
             {{#if isInRole 'super'}}
                 {{> AdminMenu}}
@@ -207,6 +192,9 @@
             {{else}}
             {{> UserMenu}}
             {{/if}}
+        </div>
+        <div class="ui center aligned segment selectSeat canvas_element">
+            <canvas id="canvas" class="fluid"></canvas>
         </div>
         {{initSettings}}
         {{> ConfirmSelectionModal}}
@@ -230,27 +218,25 @@
 </template>
 
 <template name="UserMenu">
-    <h3>Options</h3>
+    <h1>Selection Options</h1>
     <div class="ui compact menu">
-      <a id="confirmSelectionBtn" class="item" data-content="Select at least one seat">
+      <a id="confirmSelectionBtn" class="item">
         <i class="add user icon"></i>
-            Confirm Selected Seats
+            {{SelectionBtnTxt.confirm}}
        <div class="floating ui green label">{{remainingInvitations}}</div>
       </a>
       <a class="item" id="clearSelectionBtn">
         <i class="remove user icon"></i>
-        Cancel Selected Seats
+        {{SelectionBtnTxt.cancel}}
        </a>
         <div class="ui flowing popup bottom right transition hidden" style="top: 200px; left: 0.909088px; bottom: auto; right: auto; width: 400px;">
           <div class="ui one column center aligned grid">
             <div class="column">
                 {{#if takenSeatsSelected}}
-                  <h4 class="ui header">Confirm</h4>
-                  <p>You are going to remove the slelected guest(s)</p>
+                  <h4 class="ui header">{{ConfirmSelectionTxt}}</h4>
                   <div class="ui button" id="confirmClearSelection">Ok</div>
                 {{else}}
-                <h4 class="ui header">No selection found</h4>
-                <p>Please select one of your confirmed seats.</p>
+                <h4 class="ui header">{{ChangeSeats}}</h4>
                 {{/if}}
             </div>
           </div>

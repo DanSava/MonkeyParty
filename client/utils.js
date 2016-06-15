@@ -122,17 +122,6 @@ utils = {
           context.fillStyle = '#269900';
           context.fill();
       }
-      if (seat.mouseOver) {
-          if (seatKey !== mouseOverSeatKey){
-              mouseOverSeatKey = seatKey;
-              mouseOverSeatGuest = Seats.findOne({"seatKey":seatKey});
-              if(mouseOverSeatGuest !== undefined) {
-                  context.fillText("Big smile!", 10, 90);
-                  //context.fillText(mouseOverSeatGuest.name, seat.particle.x + 20, seat.particle.y);
-                  console.log(mouseOverSeatGuest.name);
-              }
-          }
-      }
       context.restore();
   },
   drawSeats:function(seats, tableId, context) {
@@ -146,12 +135,12 @@ utils = {
       // draw the big table
       context.beginPath();
       context.arc(part.x, part.y, part.radius , 0, Math.PI * 2, false);
-      context.font = 'bold 20px Verdana';
+      context.font = 'bold 15px Verdana';
 
       var selectedTable = Session.get("selectedTable");
       if (table.mouseOver) {
           var seatDiameter = 2 * table.seats[0].particle.radius;
-          context.fillText(table.name, part.x + part.radius + seatDiameter, part.y - 2 * seatDiameter);
+          context.fillText(table.name, part.x + part.radius + seatDiameter, part.y - 2 * seatDiameter, 100);
           context.lineWidth = 5;
           context.stroke() ;
         }

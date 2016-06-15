@@ -1,36 +1,36 @@
 Template.registerHelper("MainText", function() {
     if (Session.equals('language', 'eng')) {
-      return "Let us know you are going to join the party by logging in and picking a seat at a table. You can also invite other guests to our wedding";
+      return "Let us know you are going to join the party by logging in and picking seats at a table.";
     }
     else if (Session.equals('language', 'sp')) {
-      return "Déjenos saber que va a unirse a la fiesta por logicas y elegir un asiento en una mesa . También puede invitar a otros invitados a nuestra boda";
+      return "Déjanos saber si vas a venir a la fiesta registrándote y eligiendo un lugar en la mesa.";
     }
     else if (Session.equals('language', 'ro')) {
-      return "Confiram prezenta la petrecere logandu-te si alegand un loc la masa. De asemeanea poti invita alte persoane la petrecerea noastra";
+      return "Confirma prezenta la petrecere logandu-te si alegand un loc la masa";
     }
     else if (Session.equals('language', 'nl')) {
-      return "Laat ons weten dat je gaat naar de partij aan te sluiten door loging in en het kiezen van een stoel aan een tafel. U kunt ook uitnodigen andere gasten op onze bruiloft";
+      return "Laat ons weten of je bij het feest zult zijn door in te loggen en stoelen aan een tafel te selecteren.";
     }
 
-    return "Let us know you are going to join the party by logging in and picking a seat at a table. You can also invite  other guests to our wedding";
+    return "Let us know you are going to join the party by logging in and picking seats at a table.";
 });
 
 
 Template.registerHelper("BigPartyMainText", function() {
      if (Session.equals('language', 'eng')) {
-       return "It is true that we are not going to find a wizzard, climb a mountain slay a dragon and steal its gold, but non the less. It will be one of the bigest undertakings of our lives. So we will need all the help we can get from our friends and family. But what is this big adventure I am talking about? Well, it is just a big party, that we will organize in your honour. See you there.";
+       return "It is true we are not going to find a wizzard, climb a mountain slay a dragon and steal its gold, Nonetheless, it will be one of the bigest undertakings of our lives. So we will need all the help we can get from our friends and family. But what is this big adventure we are talking about? Well, it is just a big party, that we will organize in your honour. See you there!";
      }
      else if (Session.equals('language', 'sp')) {
-       return "Es cierto que no vamos a encontrar un Wizzard , escalar una montaña matar a un dragón y robar es oro, pero no menos. Será una de las empresas mas grandes de nuestra vida . Así que vamos a necesitar toda la ayuda que podemos obtener de nuestros amigos y familiares. Pero, ¿qué es esta gran aventura que estoy hablando ? Bueno , es sólo una gran fiesta , que vamos a organizar en su honor. Te veo allí.";
+       return "Es cierto que no vamos ni a encontrar un mago, ni a escalar una montaña, ni a matar a un dragón ni a robar oro. Será uno de los mayores retos de nuestra vida. Necesitaremos toda la ayuda que podamos tener de nuestros amigos y familiares. Pero ¿qué es esa gran aventura de la que estoy hablando? Bueno, es solamente una gran fiesta que organizaremos en vuestro honor. ¡Nos vemos allí!";
      }
      else if (Session.equals('language', 'ro')) {
-       return "Este adevarat ca nu o sa gasim un magician, nu o sa escaladam un munte, nu o sa ne luptam cu un dragon, si nu o sa ii furam aurul. Dar totusi o sa fie unul dintre cele mai importante evenimente din viata noastra. De aceea vom avea nevoie de tot ajutorul pe care prietenii si familia pot sa nil ofere. Dar despre ce fel de eveniment vorbesc, ei bine este vorba doar de o petrecere organizata in cinstea voastra. Asa ca sper sa ne vedem acolo. ";
+       return "Este adevarat ca nu o sa gasim un vrajitor, nu o sa escaladam un munte, nu o sa ne luptam cu un dragon, si nu o sa ii furam aurul. Totusi o sa fie unul dintre cele mai importante evenimente din viata noastra. De aceea vom avea nevoie de tot ajutorul pe care prietenii si familia pot sa ni-l ofere. Despre ce fel de eveniment vorbesc? Ei bine este vorba doar de o petrecere organizata in cinstea voastra. Asa ca sper sa ne vedem acolo! ";
      }
      else if (Session.equals('language', 'nl')) {
-       return "Het is waar dat we niet gaan om een wizzard vinden , een berg beklimmen doden een draak en stelen het goud , maar niet de minder . Het zal een van de bigest ondernemingen van ons leven . Dus zullen we alle hulp die we kunnen krijgen van onze vrienden en familie nodig hebben. Maar wat is dit grote avontuur heb ik het over ? Nou , het is gewoon een groot feest , dat we zullen organiseren in je eer . Zie je daar.";
+       return "Het is waar dat we geen tovenaar gaan vinden, een berg zullen beklimmen, een draak gaan overwinnen en zijn goud stelen. Maar het wordt een van de grootste ondernemingen van ons leven. Dus hebben we alle hulp nodig die we kunnen krijgen, van onze vrienden en onze familie. Maar wat is dit grote avontuur waar ik het over heb? Nou, het is gewoon een groot feest dat we organiseren ter ere van jou. Tot dan!";
      }
 
-     return "It is true that we are not going to find a wizzard, climb a mountain slay a dragon and steal its gold, but non the less. It will be one of the bigest undertakings of our lives. So we will need all the help we can get from our friends and family. But what is this big adventure I am talking about? Well, it is just a big party, that we will organize in your honour. See you there.";
+     return "It is true we are not going to find a wizzard, climb a mountain slay a dragon and steal its gold, Nonetheless, it will be one of the bigest undertakings of our lives. So we will need all the help we can get from our friends and family. But what is this big adventure we are talking about? Well, it is just a big party, that we will organize in your honour. See you there!";
 });
 
 Template.registerHelper("BigPartyTitleText", function() {
@@ -67,19 +67,19 @@ Template.registerHelper("GuesteListTitle", function() {
 });
 Template.registerHelper("PartyFundsText", function() {
      if (Session.equals('language', 'eng')) {
-       return "Help us make the party not only unforgetable for us.";
+       return "Help us make the party unforgetable for everyone";
      }
      else if (Session.equals('language', 'sp')) {
-       return "Ayúdanos a hacer la fiesta inolvidable no sólo para nosotros";
+       return "Ayúdanos a hacer una fiesta inolvidable para todos";
      }
      else if (Session.equals('language', 'ro')) {
        return "Ajutati-ne sa facem petrecerea de neuitat nu doar pentru noi";
      }
      else if (Session.equals('language', 'nl')) {
-       return "Ons te helpen met de partij niet alleen onvergetelijk voor ons";
+       return "Help ons om het een onvergetelijk feest te maken voor iedereen";
      }
 
-     return "Help us make the party not only unforgetable for us.";
+     return "Help us make the party unforgetable for everyone.";
 });
 Template.registerHelper("ConfirmedGuests", function() {
      if (Session.equals('language', 'eng')) {
@@ -132,22 +132,74 @@ Template.registerHelper("LocationText", function() {
 });
 Template.registerHelper("SorryText", function() {
      if (Session.equals('language', 'eng')) {
-         var txt = {'one':"The wedding party is private",
-                    'two':"Only our friends and family can attend the wedding reception.",
-                    'three': "If you are part of our friends and family please provide the password from the invitation letter."};
-       return txt;
+         var txtEng = {'one':"The wedding party is private!",
+                    'two':"Only our friends and family can attend the wedding reception. Please provide the password from the invitation letter."};
+       return txtEng;
      }
      else if (Session.equals('language', 'sp')) {
-       return "Sólo nuestros amigos y familiares pueden asistir a la recepción de la boda . Si usted es parte de nuestros amigos y familia, por favor proporcionar la contraseña de la carta de invitación";
+         var txtSp = {'one': "La fiesta de boda es privada!",
+                      'two': "Solo nuestros amigos y familiares pueden asistir a la boda. Por favor, introduce la contraseña que aparece en la invitación de boda"};
+       return txtSp;
      }
      else if (Session.equals('language', 'ro')) {
-       return "Doar familia si prietenii sunt invitati la aceasta nunta. Daca faci parte dintre familie sau prietenii nostrii te rog sa introduci parola de pe invitatie.";
+         var txtRo= {'one': "Evenimentul este privat!",
+                     'two': "Doar prietenii si familia pot sa participe la petercer. Va rugam introduceti parola de pe cartea de invitatie"};
+       return txtRo;
      }
      else if (Session.equals('language', 'nl')) {
-       return "Alleen onze vrienden en familie kunnen de huwelijksreceptie te wonen. Als u deel uitmaakt van onze vrienden en familie kunt u het wachtwoord van de uitnodigingsbrief";
+         var txtNl = {'one': "Het huwelijksfeest is prive!",
+                      'two': "Alleen onze vrienden en familie kunnen aanwezig zijn tijdens de receptie. Vul het wachtwoord uit de uitnodiging in."};
+       return txtNl;
      }
+     return  {'one':"The wedding party is private!",
+              'two':"Only our friends and family can attend the wedding reception. Please provide the password from the invitation letter."};
+});
+Template.registerHelper("HiCurrenUserTxt", function() {
+    var txtEng = {'one':"Hello ",
+                 'two':"your seat is at table "};
+     if (Session.equals('language', 'eng')) {
+       return txtEng;
+     }
+     else if (Session.equals('language', 'sp')) {
+         var txtSp = {'one': "¡Hola ",
+                      'two': "su asiento está en la mesa "};
+       return txtSp;
+     }
+     else if (Session.equals('language', 'ro')) {
+         var txtRo= {'one': "Buna",
+                     'two': "locul tau este la masa "};
+       return txtRo;
+     }
+     else if (Session.equals('language', 'nl')) {
+         var txtNl = {'one': "Hallo",
+                      'two': "uw stoel aan tafel "};
+       return txtNl;
+     }
+     return  txtEng;
+});
 
-     return "Only our friends and family can attend the wedding reception. If you are part of our friends and family please provide the password from the invitation letter";
+Template.registerHelper("SelectionBtnTxt", function() {
+    var txtEng = {'confirm':"Confirm Selection",
+                 'cancel':"Cancel Selection"};
+     if (Session.equals('language', 'eng')) {
+       return txtEng;
+     }
+     else if (Session.equals('language', 'sp')) {
+         var txtSp = {'confirm': "Confirmar la selección",
+                      'cancel': "Cancelar la selección"};
+       return txtSp;
+     }
+     else if (Session.equals('language', 'ro')) {
+         var txtRo= {'confirm': "Confirma Selectia",
+                     'cancel': "Analueaza Selectia"};
+       return txtRo;
+     }
+     else if (Session.equals('language', 'nl')) {
+         var txtNl = {'confirm': "Bevestig selectie",
+                      'cancel': "Annuleren selectie"};
+       return txtNl;
+     }
+     return  txtEng;
 });
 Template.registerHelper("PasswordPlacehoderText", function() {
      if (Session.equals('language', 'eng')) {
@@ -157,11 +209,71 @@ Template.registerHelper("PasswordPlacehoderText", function() {
        return "Contraseña de la carta de invitación";
      }
      else if (Session.equals('language', 'ro')) {
-       return "Parola de pe invitatie";
+       return "Parola de pe cartea de invitatie";
      }
      else if (Session.equals('language', 'nl')) {
        return "Wachtwoord van de uitnodigingsbrief";
      }
-
      return "Password from the invitation letter";
+});
+Template.registerHelper("GuestNames", function() {
+     if (Session.equals('language', 'eng')) {
+       return "Add name for guest sitting at table";
+     }
+     else if (Session.equals('language', 'sp')) {
+       return "Añade un nombre para el invitado sentado en la mesa";
+     }
+     else if (Session.equals('language', 'ro')) {
+       return "Adauga nume pentru invitatul de la masa";
+     }
+     else if (Session.equals('language', 'nl')) {
+       return "Geef de naam van de gast aan tafel";
+     }
+     return "Add name for guest sitting at table";
+});
+
+Template.registerHelper("ConfirmSelectionTxt", function() {
+     if (Session.equals('language', 'eng')) {
+       return "Please confirm the selection";
+     }
+     else if (Session.equals('language', 'sp')) {
+       return "Por favor confirmar la selección";
+     }
+     else if (Session.equals('language', 'ro')) {
+       return "Va rugam sa confirmati selectia";
+     }
+     else if (Session.equals('language', 'nl')) {
+       return "Gelieve te bevestigen de selectie";
+     }
+     return "Please confirm the selection";
+});
+Template.registerHelper("FirstLastName", function() {
+     if (Session.equals('language', 'eng')) {
+       return "First Name & Last Name";
+     }
+     else if (Session.equals('language', 'sp')) {
+       return "Nombre y apellidos";
+     }
+     else if (Session.equals('language', 'ro')) {
+       return "Prenume & Nume";
+     }
+     else if (Session.equals('language', 'nl')) {
+       return "Voornaam & achternaam";
+     }
+     return "First Name & Last Name";
+});
+Template.registerHelper("ChangeSeats", function() {
+     if (Session.equals('language', 'eng')) {
+       return "Please select one of your confirmed seats";
+     }
+     else if (Session.equals('language', 'sp')) {
+       return "Por favor, selecciona uno de tus asientos confirmados";
+     }
+     else if (Session.equals('language', 'ro')) {
+       return "Selectati unul din locurile dumneavoastra confirmate";
+     }
+     else if (Session.equals('language', 'nl')) {
+       return "Selecteer een van de voor jou gereserveerde stoelen";
+     }
+     return "Please select one of your confirmed seats";
 });

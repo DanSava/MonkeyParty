@@ -2,7 +2,6 @@ function clearErros(){
     loginFormErrors = [];
     Session.set('loginErros',loginFormErrors);
 }
-
 function validateUserData(userData) {
     loginFormErrors = [];
     if(Session.get("signUp")){
@@ -43,6 +42,50 @@ function validateUserData(userData) {
 
     return loginFormErrors.length === 0 ;
 }
+
+function submitForm() {
+    if(Session.get("signUp")) {
+        userData = {
+            'firstname': $('#firstname').val(),
+            'lastname': $('#lastname').val(),
+            'email': $('#email').val(),
+            'password': $('#password').val()
+        };
+        if(validateUserData(userData)){
+            var userObject = {
+                username: userData.firstname,
+                email: userData.email,
+                password: userData.password,
+                profile: {name:userData.firstname + " " + userData.lastname}
+            };
+            Accounts.createUser(userObject, function(err){
+                if (err) {
+                    loginFormErrors.push(err.reason);
+                    Session.set('loginErros', loginFormErrors);
+                }
+                else {
+                     $('#loginModal').modal('hide');
+                }
+             });
+        }
+    } else {
+        userData = {
+            'email': $('#email').val(),
+            'password': $('#password').val()
+        };
+        if(validateUserData(userData)){
+            Meteor.loginWithPassword(userData.email, userData.password, function(err){
+             if (err){
+                 loginFormErrors.push(err.reason);
+                 Session.set('loginErros', loginFormErrors);
+             }
+             else{
+                  $('#loginModal').modal('hide');
+             }
+           });
+        }
+    }
+}
 Template.LoginDlg.events({
     "click #facebookBtn": function(event, template){
         clearErros();
@@ -61,48 +104,14 @@ Template.LoginDlg.events({
         Session.set("signUp", !current);
         clearErros();
       },
-      "click #submitBtn": function(event, template){
-          if(Session.get("signUp")){
-              userData = {
-                  'firstname': $('#firstname').val(),
-                  'lastname': $('#lastname').val(),
-                  'email': $('#email').val(),
-                  'password': $('#password').val()
-              };
-              if(validateUserData(userData)){
-                  var userObject = {
-                      username: userData.firstname,
-                      email: userData.email,
-                      password: userData.password,
-                      profile: {name:userData.firstname + " " + userData.lastname}
-                  };
-                  Accounts.createUser(userObject, function(err){
-                      if (err) {
-                          loginFormErrors.push(err.reason);
-                          Session.set('loginErros', loginFormErrors);
-                      }
-                      else {
-                           $('#loginModal').modal('hide');
-                      }
-                   });
-              }
-          } else {
-              userData = {
-                  'email': $('#email').val(),
-                  'password': $('#password').val()
-              };
-              if(validateUserData(userData)){
-                  Meteor.loginWithPassword(userData.email, userData.password, function(err){
-                   if (err){
-                       loginFormErrors.push(err.reason);
-                       Session.set('loginErros', loginFormErrors);
-                   }
-                   else{
-                        $('#loginModal').modal('hide');
-                   }
-                 });
-              }
-          }
+      "click #submitBtn": function(event, template) {
+          submitForm();
+        },
+
+        'keypress .pass': function(evnt, tmp) {
+             if (evnt.keyCode === 13 ) {
+                    submitForm();
+             }
         },
 });
 
