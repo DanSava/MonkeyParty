@@ -7,3 +7,4 @@ Session.setDefault('listAllGuests', false);
 Session.setDefault('takenSelectedSeats', []);
 Session.setDefault('language', 'eng');
 Session.setDefault('tableList', null);
+Session.setDefault("takenSeatsSession", null);

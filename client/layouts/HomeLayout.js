@@ -139,8 +139,10 @@ Template.UserMenu.events({
          takenSeats = getTakenSeats();
          myTakenSeats = getMyTakenSeats();
          Session.set('tableList',getAllTables());
+
          if(typeof canvas !== 'undefined') {
              initContext(Session.get('tableList'));
+              Session.set('takenSeatsSession', getTakenSeats());
          }
          updateCanvas();
      },

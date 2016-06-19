@@ -64,31 +64,35 @@ utils = {
       utils.drawParticle(el, context);
     });
   },
-  drawSeat: function(seat, tableId, seatIdx, context) {
+  drawSeat: function(seat, tableInfo, seatIdx, context) {
       var isSeatSelected = false;
       var isThisSeatTakeByMeAndSelected = false;
 
-      var seatKey = tableId + '_' + seatIdx;
+      var seatKey = tableInfo.id + '_' + seatIdx;
       var isSeatTaken = (seatKey in takenSeats);
       var myTakenSeat = (seatKey in myTakenSeats);
 
 
       for(var j=0; j<myTakenSelectedSeats.length; j++) {
-          if (myTakenSelectedSeats[j].seat === seatIdx && myTakenSelectedSeats[j].tableId === tableId) {
+          if (myTakenSelectedSeats[j].seat === seatIdx && myTakenSelectedSeats[j].tableId === tableInfo.id) {
                 isThisSeatTakeByMeAndSelected = true;
           }
       }
       for(var i=0; i<selectedSeats.length; i++) {
-          if (selectedSeats[i].seat === seatIdx && selectedSeats[i].tableId === tableId) {
+          if (selectedSeats[i].seat === seatIdx && selectedSeats[i].tableId === tableInfo.id) {
                 isSeatSelected = true;
           }
       }
 
       context.save();
       context.beginPath();
-      context.font = 'bold 20px Verdana';
+      context.font = 'bold 15px Kalam';
 
-      if (seat.mouseOver && !isSeatSelected && !isSeatTaken){
+      if (seat.mouseOver && isSeatTaken){
+          var guestName = Session.get('takenSeatsSession')[seatKey].name;
+          context.fillText(guestName, tableInfo.textX, tableInfo.textY, 150);
+      }
+      else if (seat.mouseOver && !isSeatSelected && !isSeatTaken){
           context.shadowColor = '#999';
           context.shadowBlur = 1;
           context.shadowOffsetX = 5;
@@ -100,8 +104,8 @@ utils = {
           context.shadowOffsetX = 5;
           context.shadowOffsetY = 5;
       }
-
-      context.arc(seat.particle.x, seat.particle.y, seat.particle.radius, 0, Math.PI * 2, false);
+      utils.drawParticle(seat.particle, context, 'green');
+    //   context.arc(seat.particle.x, seat.particle.y, seat.particle.radius, 0, Math.PI * 2, false);
       if (isSeatSelected && !isSeatTaken){
           context.fillStyle = '#0066ff';
           context.fill();
@@ -124,9 +128,9 @@ utils = {
       }
       context.restore();
   },
-  drawSeats:function(seats, tableId, context) {
+  drawSeats:function(seats, tableInfo, context) {
       seats.forEach(function(el, index, array) {
-        utils.drawSeat(el, tableId, index, context);
+        utils.drawSeat(el, tableInfo, index, context);
       });
   },
   drawTable: function (table, context){
@@ -135,12 +139,15 @@ utils = {
       // draw the big table
       context.beginPath();
       context.arc(part.x, part.y, part.radius , 0, Math.PI * 2, false);
-      context.font = 'bold 15px Verdana';
-
+      context.font = 'bold 15px Kalam';
+      var tableInfo = {
+          'id': table.id,
+          'textX':part.x + part.radius + 2 * table.seats[0].particle.radius,
+          'textY':part.y - 4 * table.seats[0].particle.radius
+      };
       var selectedTable = Session.get("selectedTable");
       if (table.mouseOver) {
-          var seatDiameter = 2 * table.seats[0].particle.radius;
-          context.fillText(table.name, part.x + part.radius + seatDiameter, part.y - 2 * seatDiameter, 100);
+          context.fillText(table.name,tableInfo.textX,tableInfo.textY, 150);
           context.lineWidth = 5;
           context.stroke() ;
         }
@@ -156,7 +163,7 @@ utils = {
       context.restore();
 
       //draw the table seats
-      utils.drawSeats(table.seats, table.id, context);
+      utils.drawSeats(table.seats, tableInfo, context);
 
   },
   drawTables: function (tables, context){
@@ -327,6 +334,9 @@ particle = {
                     'radius':this.particle.radius};
              if (utils.pointCircelCollision(p, c)) {
                  this.mouseOver = true;
+                 this.seats.forEach(function(el, index, array) {
+                         el.mouseOver = false;
+                  });
              }
              else {
                  this.mouseOver = false;
