@@ -2,6 +2,14 @@ if (Meteor.isClient) {
 mouseOverSeatKey = "";
 mouseOverSeatGuest = "";
 
+var setClickable = function(drawingContext) {
+  document.body.style.cursor = "pointer"
+  drawingContext.shadowColor = '#999';
+  drawingContext.shadowBlur = 1;
+  drawingContext.shadowOffsetX = 5;
+  drawingContext.shadowOffsetY = 5;
+}
+
 utils = {
   distance: function(p0, p1) {
     var dx = p1.x - p0.x,
@@ -59,6 +67,60 @@ utils = {
       context.fill();
     }
   },
+  drawOKCancelButtons(buttons, context){
+    buttons.forEach(function(el, index, array) {
+      if (el.btnType === 1) {
+        utils.drawOkbutton(el, context);
+      }
+      else {
+        utils.drawCancelbutton(el, context);
+      }
+    });
+  },
+  drawOkbutton: function(button, context){
+    var x = button.particle.x;
+    var y = button.particle.y
+    var radius = button.particle.radius;
+    context.save();
+    context.lineWidth=5
+    context.beginPath();
+    context.arc(x, y, radius, 0, Math.PI * 2, false);
+    context.closePath();
+    context.lineCap = "round";
+    if (button.mouseOver) {
+      context.lineWidth = 8;
+      context.strokeStyle = "#0099ff";
+      setClickable(context);
+    }
+    context.moveTo(x - 0.3 * radius, y);
+    context.lineTo(x, y + 0.4 * radius);
+    context.lineTo(x + 0.5 * radius, y - 0.5 * radius);
+    context.stroke();
+    context.restore();
+  },
+  drawCancelbutton: function(button, context){
+    var x = button.particle.x;
+    var y = button.particle.y
+    var radius = button.particle.radius;
+
+    context.save();
+    context.beginPath();
+    context.arc(x, y, radius , 0, Math.PI * 2, false);
+    context.closePath();
+    context.lineCap = "round";
+    context.lineWidth=5
+    if (button.mouseOver) {
+      context.lineWidth = 8;
+      context.strokeStyle = "#0099ff";
+      setClickable(context);
+    }
+    context.moveTo(x - 0.45 * radius, y - 0.45 * radius);
+    context.lineTo(x + 0.45 * radius, y + 0.45 * radius);
+    context.moveTo(x + 0.45 * radius, y - 0.45 * radius);
+    context.lineTo(x - 0.45 * radius, y + 0.45 * radius);
+    context.stroke();
+    context.restore();
+  },
   drawParticles: function (particles, context) {
     particles.forEach(function(el, index, array) {
       utils.drawParticle(el, context);
@@ -84,25 +146,25 @@ utils = {
           }
       }
 
+
       context.save();
       context.beginPath();
-      context.font = 'bold 15px Kalam';
+      context.font = 'bold 18px Kalam';
 
       if (seat.mouseOver && isSeatTaken){
-          var guestName = Session.get('takenSeatsSession')[seatKey].name;
-          context.fillText(guestName, tableInfo.textX, tableInfo.textY, 150);
+          if (Session.get('takenSeatsSession') !== null){
+            var guestName = Session.get('takenSeatsSession')[seatKey].name;
+            context.fillText(guestName, tableInfo.textX, tableInfo.textY, 250);
+          }
+          else {
+            Session.set('takenSeatsSession', getTakenSeats() )
+          }
+          if (myTakenSeat) {
+            setClickable(context);
+          }
       }
-      else if (seat.mouseOver && !isSeatSelected && !isSeatTaken){
-          context.shadowColor = '#999';
-          context.shadowBlur = 1;
-          context.shadowOffsetX = 5;
-          context.shadowOffsetY = 5;
-      }
-      else if (seat.mouseOver && myTakenSeat) {
-          context.shadowColor = '#999';
-          context.shadowBlur = 1;
-          context.shadowOffsetX = 5;
-          context.shadowOffsetY = 5;
+      else if (seat.mouseOver && !isSeatSelected && !isSeatTaken) {
+        setClickable(context);
       }
       utils.drawParticle(seat.particle, context, 'green');
     //   context.arc(seat.particle.x, seat.particle.y, seat.particle.radius, 0, Math.PI * 2, false);
@@ -111,7 +173,7 @@ utils = {
           context.fill();
       }
       else if (isThisSeatTakeByMeAndSelected) {
-          context.fillStyle = '#00ccff';
+          context.fillStyle = '#0066ff';
           context.fill();
       }
       else if (isSeatTaken && !myTakenSeat){
@@ -126,6 +188,7 @@ utils = {
           context.fillStyle = '#269900';
           context.fill();
       }
+      context.closePath();
       context.restore();
   },
   drawSeats:function(seats, tableInfo, context) {
@@ -139,15 +202,15 @@ utils = {
       // draw the big table
       context.beginPath();
       context.arc(part.x, part.y, part.radius , 0, Math.PI * 2, false);
-      context.font = 'bold 15px Kalam';
+      context.font = 'bold 18px Kalam';
       var tableInfo = {
           'id': table.id,
-          'textX':part.x + part.radius + 2 * table.seats[0].particle.radius,
-          'textY':part.y - 4 * table.seats[0].particle.radius
+          'textX':part.x - part.radius ,
+          'textY':part.y - part.radius - 4 * table.seats[0].particle.radius
       };
       var selectedTable = Session.get("selectedTable");
       if (table.mouseOver) {
-          context.fillText(table.name,tableInfo.textX,tableInfo.textY, 150);
+          context.fillText(table.name,tableInfo.textX,tableInfo.textY, 250);
           context.lineWidth = 5;
           context.stroke() ;
         }
@@ -299,6 +362,39 @@ particle = {
        update : function () {
        },
      };
+
+// =====================================================
+// ButtonJs
+// =====================================================
+  circularOKCancelbutton = {
+    particle:  null,
+    mouseOver: false,
+    btnType: 1,
+    create : function (x, y, radius, btnType) {
+      var obj = Object.create(this);
+      obj.particle = particle.create(x, y, 0, 0, 0, radius);
+      obj.btnType = btnType;
+      return obj;
+    },
+    checkMouseOver: function(x, y){
+        var p = {'x':x,
+                 'y':y};
+        var c = {'x':this.particle.x,
+                 'y':this.particle.y,
+                 'radius':this.particle.radius};
+          if (utils.pointCircelCollision(p, c)) {
+              this.mouseOver = true;
+          }
+          else {
+              this.mouseOver = false;
+          }
+        return this.mouseOver;
+    },
+    checkClick: function(x,y) {
+      this.checkMouseOver(x,y);
+      return this.mouseOver
+      }
+  }
 // =====================================================
 // Table Js
 // =====================================================
@@ -367,6 +463,21 @@ particle = {
        },
 
      };
+
+
+buttonsUtils = {
+  setupButtons: function(width, height, radius) {
+    var radius  = radius * 1.5;
+    var x = width - 3 * radius
+    var y = height - 3 * radius
+    buttons = [];
+    buttons.push(circularOKCancelbutton.create(x, y, radius, 0))
+    x  = x - 3 * radius
+
+    buttons.push(circularOKCancelbutton.create(x, y, radius, 1))
+    return buttons
+  }
+}
 
 tableUtils = {
 setupTables: function(noTablesPerRow, width, height, tableList){

@@ -5,6 +5,41 @@ if(Meteor.isClient){
     selectedSeats = [];
     myTakenSelectedSeats = [];
 
+
+    confirmSelectionAction = function () {
+      console.log("here!!!");
+      Session.set('CSFErrors', []); // reseting the error message if preveiouse error messages were present.
+      if(selectedSeats.length > 0) {
+          Meteor.call("isUserSeated", Meteor.userId(), function(error, result){
+              if(error){
+                  console.log("error", error);
+                  Session.set('isUserSeated', false);
+              }
+              if (result){
+                  Session.set('isUserSeated', true);
+              }
+              else{
+                  Session.set('isUserSeated', false);
+                  Session.set("currnetUserSeat", null);
+              }
+          });
+          Session.set("clickedSeats", selectedSeats);
+          $('#confirmSelectionDlg').modal('show');
+      }
+    };
+    cancelSelectionAction = function () {
+      Meteor.call("removeGuest", myTakenSelectedSeats, function(error, result){
+          if(error){
+              console.log("error", error);
+          }
+          if(result){
+
+          }
+      });
+      myTakenSelectedSeats = [];
+      Session.set('takenSelectedSeats', []);
+    }
+
     validateEmail = function (email) {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email);
@@ -105,12 +140,17 @@ if(Meteor.isClient){
       // Start the setup of the table
       var noTablesPerRow = 4;
       tables = tableUtils.setupTables(noTablesPerRow, width, height, tableList);
+      okCancelButtons = [];
+      if (tables.length > 0 ){
+        okCancelButtons = buttonsUtils.setupButtons(width, height, tables[0].particle.radius / 2)
+      }
     };
 
     updateCanvas = function() {
         if (typeof context !== 'undefined' && typeof width !== 'undefined' && typeof height !== 'undefined'){
             context.clearRect(0, 0, width, height);
             utils.drawTables(tables, context);
+            utils.drawOKCancelButtons(okCancelButtons, context);
         }
         requestAnimationFrame(updateCanvas);
     };

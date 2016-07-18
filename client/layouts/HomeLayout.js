@@ -97,37 +97,10 @@ Template.UserMenu.helpers({
 
 Template.UserMenu.events({
     'click #confirmSelectionBtn': function (event, template) {
-        Session.set('CSFErrors', []); // reseting the error message if preveiouse error messages were present.
-        Meteor.call("isUserSeated", Meteor.userId(), function(error, result){
-            if(error){
-                console.log("error", error);
-                Session.set('isUserSeated', false);
-            }
-            if (result){
-                Session.set('isUserSeated', true);
-            }
-            else{
-                Session.set('isUserSeated', false);
-                Session.set("currnetUserSeat", null);
-            }
-        });
-        if(selectedSeats.length > 0) {
-            Session.set("clickedSeats", selectedSeats);
-            $('#confirmSelectionDlg').modal('show');
-        }
+      confirmSelectionAction();
     },
     'click #confirmClearSelection': function (evt, tmp){
-        Meteor.call("removeGuest", myTakenSelectedSeats, function(error, result){
-            if(error){
-                console.log("error", error);
-            }
-            if(result){
-
-            }
-        });
-        myTakenSelectedSeats = [];
-        tmp.$('#clearSelectionBtn').popup('hide');
-        Session.set('takenSelectedSeats', []);
+      cancelSelectionAction();
     },
  });
 
@@ -163,34 +136,65 @@ Template.PickYourSeat.rendered = function(){
     });
 
     width = $('.canvas_element').width() - 20;
+    $('.canvas_element').on('tap', function(evt){
+      console.log(evt);
+      console.log(evt.clientX, evt.clientY);
+    });
+
+    var interactionHelperFucntion = function (event){
+      var posX = 0;
+      var posY = 0;
+      if (event.type === "mousedown"){
+          posX = event.offsetX;
+          posY = event.offsetY;
+      }
+      else if (event.type === "touchstart") {
+          posX = event.touches['0'].screenX;
+          posY = event.touches['0'].screenY;
+      }
+      okCancelButtons.forEach(function(el, index, array) {
+        if (el.checkClick(posX, posY) && el.btnType === 1) {
+          confirmSelectionAction();
+        }
+        else if (el.checkClick(posX, posY) && el.btnType === 0) {
+          cancelSelectionAction();
+        }
+      });
+      var selectedSeat = null;
+      var selectedTable = getClickedTable(posX, posY);
+      Session.set('selectedTable', selectedTable);
+      if (!selectedTable) {
+          selectedSeat = getClickedSeat(posX, posY);
+
+        if (selectedSeat) {
+              var isSeatTaken = isThisSeatTaken(selectedSeat);
+              var myTakenSeat = isMyTakenSeat(selectedSeat);
+              if (!isSeatTaken) {
+                if (Roles.userIsInRole(Meteor.user(),'super')){
+                    AdminAddSelectedSeat(selectedSeat);
+                }
+                else {
+                  addSelectedSeat(selectedSeat);
+                }
+              }
+              else if (myTakenSeat){
+                  addSeatToMyTakenSelectedSeats(selectedSeat);
+              }
+              else if (Roles.userIsInRole(Meteor.user(),'super')) {
+                AdminAddSeatToMyTakenSelectedSeats(selectedSeat);
+              }
+          }
+      }
+    }
+
+    canvas.addEventListener("touchstart", function(event) {
+      interactionHelperFucntion(event)
+    });
+
     height = 0.4 * width;
     initContext(getAllTables());
     canvas.addEventListener("mousedown", function(event) {
-        var selectedSeat = null;
-        var selectedTable = getClickedTable(event.offsetX, event.offsetY);
-        Session.set('selectedTable', selectedTable);
-        if (!selectedTable) {
-            selectedSeat = getClickedSeat(event.offsetX, event.offsetY);
-
-          if (selectedSeat) {
-                var isSeatTaken = isThisSeatTaken(selectedSeat);
-                var myTakenSeat = isMyTakenSeat(selectedSeat);
-                if (!isSeatTaken) {
-                  if (Roles.userIsInRole(Meteor.user(),'super')){
-                      AdminAddSelectedSeat(selectedSeat);
-                  }
-                  else {
-                    addSelectedSeat(selectedSeat);
-                  }
-                }
-                else if (myTakenSeat){
-                    addSeatToMyTakenSelectedSeats(selectedSeat);
-                }
-                else if (Roles.userIsInRole(Meteor.user(),'super')) {
-                  AdminAddSeatToMyTakenSelectedSeats(selectedSeat);
-                }
-            }
-        }
+      interactionHelperFucntion(event);
     });
 
     canvas.addEventListener("mousemove", function(event) {
@@ -200,6 +204,10 @@ Template.PickYourSeat.rendered = function(){
               document.body.style.cursor = "pointer";
           }
       });
+        okCancelButtons.forEach(function(el, index, array) {
+          el.checkMouseOver(event.offsetX, event.offsetY);
+        });
+
     });
 
     window.addEventListener('resize', function(event, tmp) {
