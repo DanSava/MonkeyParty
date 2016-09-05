@@ -178,29 +178,6 @@ Template.registerHelper("HiCurrenUserTxt", function() {
      return  txtEng;
 });
 
-Template.registerHelper("SelectionBtnTxt", function() {
-    var txtEng = {'confirm':"Confirm Selection",
-                 'cancel':"Cancel Selection"};
-     if (Session.equals('language', 'eng')) {
-       return txtEng;
-     }
-     else if (Session.equals('language', 'sp')) {
-         var txtSp = {'confirm': "Confirmar la selección",
-                      'cancel': "Cancelar la selección"};
-       return txtSp;
-     }
-     else if (Session.equals('language', 'ro')) {
-         var txtRo= {'confirm': "Confirma Selectia",
-                     'cancel': "Analueaza Selectia"};
-       return txtRo;
-     }
-     else if (Session.equals('language', 'nl')) {
-         var txtNl = {'confirm': "Bevestig selectie",
-                      'cancel': "Annuleren selectie"};
-       return txtNl;
-     }
-     return  txtEng;
-});
 Template.registerHelper("PasswordPlacehoderText", function() {
      if (Session.equals('language', 'eng')) {
        return "Password from the invitation letter";
@@ -261,19 +238,4 @@ Template.registerHelper("FirstLastName", function() {
        return "Voornaam & achternaam";
      }
      return "First Name & Last Name";
-});
-Template.registerHelper("ChangeSeats", function() {
-     if (Session.equals('language', 'eng')) {
-       return "Please select one of your confirmed seats";
-     }
-     else if (Session.equals('language', 'sp')) {
-       return "Por favor, selecciona uno de tus asientos confirmados";
-     }
-     else if (Session.equals('language', 'ro')) {
-       return "Selectati unul din locurile dumneavoastra confirmate";
-     }
-     else if (Session.equals('language', 'nl')) {
-       return "Selecteer een van de voor jou gereserveerde stoelen";
-     }
-     return "Please select one of your confirmed seats";
 });

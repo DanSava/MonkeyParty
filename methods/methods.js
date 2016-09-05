@@ -14,6 +14,16 @@ Meteor.methods({
             return Tables.update({_id:table.tableId}, {$set:{name: table.tableName} });
         }
     },
+    addTableSeat : function(table){
+        if (table) {
+            return Tables.update({_id:table.tableId}, {$inc:{nrSeats: 1} });
+        }
+    },
+    removeTableSeat : function(table){
+        if (table) {
+            return Tables.update({_id:table.tableId}, {$inc:{nrSeats: -1} });
+        }
+    },
     checkPassword: function (txt){
         return txt === 'dsgg0309';
     },

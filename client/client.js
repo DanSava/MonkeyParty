@@ -7,7 +7,6 @@ if(Meteor.isClient){
 
 
     confirmSelectionAction = function () {
-      console.log("here!!!");
       Session.set('CSFErrors', []); // reseting the error message if preveiouse error messages were present.
       if(selectedSeats.length > 0) {
           Meteor.call("isUserSeated", Meteor.userId(), function(error, result){
@@ -142,7 +141,7 @@ if(Meteor.isClient){
       tables = tableUtils.setupTables(noTablesPerRow, width, height, tableList);
       okCancelButtons = [];
       if (tables.length > 0 ){
-        okCancelButtons = buttonsUtils.setupButtons(width, height, tables[0].particle.radius / 2)
+        okCancelButtons = buttonsUtils.setupButtons(width, height, tables[0].particle.radius / 3)
       }
     };
 

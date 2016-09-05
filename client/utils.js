@@ -89,7 +89,7 @@ utils = {
     context.lineCap = "round";
     if (button.mouseOver) {
       context.lineWidth = 8;
-      context.strokeStyle = "#0099ff";
+      context.strokeStyle = "blue";
       setClickable(context);
     }
     context.moveTo(x - 0.3 * radius, y);
@@ -111,7 +111,7 @@ utils = {
     context.lineWidth=5
     if (button.mouseOver) {
       context.lineWidth = 8;
-      context.strokeStyle = "#0099ff";
+      context.strokeStyle = "blue";
       setClickable(context);
     }
     context.moveTo(x - 0.45 * radius, y - 0.45 * radius);
@@ -154,7 +154,7 @@ utils = {
       if (seat.mouseOver && isSeatTaken){
           if (Session.get('takenSeatsSession') !== null){
             var guestName = Session.get('takenSeatsSession')[seatKey].name;
-            context.fillText(guestName, tableInfo.textX, tableInfo.textY, 250);
+            context.fillText(guestName, tableInfo.textX, tableInfo.textY + tableInfo.tableSelected * 20, 250);
           }
           else {
             Session.set('takenSeatsSession', getTakenSeats() )
@@ -203,20 +203,24 @@ utils = {
       context.beginPath();
       context.arc(part.x, part.y, part.radius , 0, Math.PI * 2, false);
       context.font = 'bold 18px Kalam';
+
+      var selectedTable = Session.get("selectedTable");
+      var isTableSelected = selectedTable && selectedTable.tableId === table.id;
       var tableInfo = {
           'id': table.id,
-          'textX':part.x - part.radius ,
-          'textY':part.y - part.radius - 4 * table.seats[0].particle.radius
+          'textX':part.x + part.radius ,
+          'textY':part.y - part.radius - 1.75 * table.seats[0].particle.radius,
+          'tableSelected': isTableSelected
       };
-      var selectedTable = Session.get("selectedTable");
       if (table.mouseOver) {
           context.fillText(table.name,tableInfo.textX,tableInfo.textY, 250);
           context.lineWidth = 5;
           context.stroke() ;
         }
-        var isTableSelected = selectedTable && selectedTable.tableId === table.id;
         if (isTableSelected){
+            context.fillText(table.name,tableInfo.textX,tableInfo.textY, 250);
             context.lineWidth = 5;
+            context.strokeStyle = "blue";
             context.stroke() ;
         }
         else {
@@ -468,8 +472,8 @@ particle = {
 buttonsUtils = {
   setupButtons: function(width, height, radius) {
     var radius  = radius * 1.5;
-    var x = width - 3 * radius
-    var y = height - 3 * radius
+    var x = width - 2 * radius
+    var y = height - 2 * radius
     buttons = [];
     buttons.push(circularOKCancelbutton.create(x, y, radius, 0))
     x  = x - 3 * radius
@@ -487,7 +491,7 @@ setupTables: function(noTablesPerRow, width, height, tableList){
        noTables = tableList.length,
        noTableRows = Math.ceil(tableList.length /noTablesPerRow),
        prevHight = height / (noTableRows * 2),
-       prevWidth = width / (noTablesPerRow * 2);
+       prevWidth = width / (noTablesPerRow * 2) ;
        // Init the tables
        for (i = 0; i < noTableRows; i++) {
            for (j = 0; j < noTablesPerRow; j++) {
@@ -495,10 +499,10 @@ setupTables: function(noTablesPerRow, width, height, tableList){
                    var idx = i * noTablesPerRow  + j;
                    tables.push(table.create(prevWidth, prevHight, tableRadius, tableList[idx].nrSeats, tableList[idx]._id, tableList[idx].name));
                }
-               prevWidth += width * (1/noTablesPerRow);
+               prevWidth += width * (1/noTablesPerRow) ;
            }
            prevHight += height / noTableRows;
-           prevWidth = width/(noTablesPerRow * 2);
+           prevWidth = width/(noTablesPerRow * 2) ;
        }
    return tables;
 }

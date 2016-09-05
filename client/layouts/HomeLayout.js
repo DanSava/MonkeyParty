@@ -55,6 +55,18 @@ Template.AdminMenu.events({
             $('#addTableDlg').modal('show');
         }
     },
+    "click #addEmptySeat": function(event, template) {
+        var selTable =  Session.get('selectedTable');
+        if (selTable) {
+          Meteor.call("addTableSeat", selTable);
+        }
+    },
+    "click #removeEmptySeat": function(event, template) {
+        var selTable =  Session.get('selectedTable');
+        if (selTable) {
+            Meteor.call("removeTableSeat", selTable);
+        }
+    },
     "click #adminRemoveGuest": function(event, template) {
       Meteor.call("removeGuest", myTakenSelectedSeats, function(error, result){
           if(error){
@@ -82,29 +94,6 @@ Template.AdminMenu.events({
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//UserMenu
-////////////////////////////////////////////////////////////////////////////////
-Template.UserMenu.helpers({
-    remainingInvitations: function() {
-        // Retrurn the number guests that can be added by the current user.
-        return 5 - countMyTakenSeats();
-    },
-    takenSeatsSelected: function() {
-        var x = Session.get('takenSelectedSeats');
-        return x.length > 0;
-    }
-});
-
-Template.UserMenu.events({
-    'click #confirmSelectionBtn': function (event, template) {
-      confirmSelectionAction();
-    },
-    'click #confirmClearSelection': function (evt, tmp){
-      cancelSelectionAction();
-    },
- });
-
-////////////////////////////////////////////////////////////////////////////////
 //PickYourSeat
 ////////////////////////////////////////////////////////////////////////////////
  Template.PickYourSeat.helpers({
@@ -125,16 +114,6 @@ Template.UserMenu.events({
  });
 
 Template.PickYourSeat.rendered = function(){
-    this.$('#clearSelectionBtn').popup({
-        position : 'bottom right',
-        inline   : true,
-        hoverable: true,
-        delay: {
-          show: 300,
-          hide: 100
-        }
-    });
-
     width = $('.canvas_element').width() - 20;
     $('.canvas_element').on('tap', function(evt){
       console.log(evt);
@@ -186,13 +165,14 @@ Template.PickYourSeat.rendered = function(){
           }
       }
     }
+    height = 0.4 * width;
+
+    initContext(getAllTables());
 
     canvas.addEventListener("touchstart", function(event) {
       interactionHelperFucntion(event)
     });
 
-    height = 0.4 * width;
-    initContext(getAllTables());
     canvas.addEventListener("mousedown", function(event) {
       interactionHelperFucntion(event);
     });
@@ -209,6 +189,7 @@ Template.PickYourSeat.rendered = function(){
         });
 
     });
+
 
     window.addEventListener('resize', function(event, tmp) {
         width = $('.canvas_element').width() - 20;
@@ -256,10 +237,7 @@ Template.NotSoFastDlg.events({
  Template.HomeLayout.events({
  'click #joinThePartyBtn': function () {
      if (!Meteor.user()){
-         $('#notSoFastDlg').modal(
-         {
-             onApprove : function() {}
-           }).modal('show');
+         $('#notSoFastDlg').modal('show');
        }
      }
  });
